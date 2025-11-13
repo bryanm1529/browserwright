@@ -22,22 +22,19 @@
  * - /extension/guid - Extension connection for chrome.debugger forwarding
  */
 
- import net from 'net'
+ import net from 'net';
 
-import { spawn } from 'child_process';
 import http from 'http';
 
 import { debug, ws, wsServer } from 'playwright-core/lib/utilsBundle';
-import { registry } from 'playwright-core/lib/server/registry/index';
+
 import { ManualPromise } from 'playwright-core/lib/utils';
 
 
-import * as protocol from './protocol.js';
 
+import type { WebSocket, WebSocketServer } from 'playwright-core/lib/utilsBundle';
 import type websocket from 'ws';
 import type { ExtensionCommand, ExtensionEvents } from './protocol.js';
-import type { WebSocket, WebSocketServer } from 'playwright-core/lib/utilsBundle';
-import { ClientInfo } from './types.js';
 
 
 const debugLogger = debug('pw:mcp:relay');
