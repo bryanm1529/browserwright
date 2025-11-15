@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Playwriter",
+  "name": "Playwriter MCP",
   "version": "0.0.47",
-  "description": "Playwriter MCP",
+  "description": "Control Chrome via MCP using CDP events. Connect Playwright without spawning new Chrome instances.",
   "permissions": [
     "debugger",
     "activeTab",
