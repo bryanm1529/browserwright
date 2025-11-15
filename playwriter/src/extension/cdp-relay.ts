@@ -65,6 +65,9 @@ export async function startRelayServer({ port = 9988 }: { port?: number } = {}) 
       if (params.targetId) {
         details.push(`targetId=${params.targetId}`)
       }
+      if (params.targetInfo?.targetId) {
+        details.push(`targetId=${params.targetInfo.targetId}`)
+      }
       if (params.sessionId && params.sessionId !== sessionId) {
         details.push(`sessionId=${params.sessionId}`)
       }
@@ -367,6 +370,7 @@ export async function startRelayServer({ port = 9988 }: { port?: number } = {}) 
               targetId: targetParams.targetInfo.targetId,
               targetInfo: targetParams.targetInfo
             })
+
 
             sendToPlaywright({
               message: {
