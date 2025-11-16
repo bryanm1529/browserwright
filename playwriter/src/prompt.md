@@ -4,6 +4,10 @@ if you get an error Extension not running tell user to install and enable the pl
 
 execute tool let you run playwright js code snippets to control user Chrome window, these js code snippets are preferred to be in a single line to make them more readable in agent interface. separating statements with semicolons
 
+you MUST use multiple execute tool calls for running complex logic. this ensures 
+- you have clear understanding of intermediate state between interactions
+- you can split finding an element from interacting with it. making it simpler to understand what is the issue when an action is not successful
+
 it will control an existing user Chrome window. The js code  will be run in a sandbox with some variables in context:
 
 - state: an object shared between runs that you can mutate to persist functions and objects. for example `state.requests = []` to monitor network requests between runs

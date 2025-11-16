@@ -169,7 +169,7 @@ server.tool(
     code: z
       .string()
       .describe(
-        'JavaScript code to execute with page, state, context in scope. Should be one line, using ; to execute multiple statements. To execute complex actions call execute multiple times. ',
+        'js playwright code, has {page, state, context} in scope. Should be one line, using ; to execute multiple statements. you MUST call execute multiple times instead of writing complex scripts in a single tool call.',
       ),
     timeout: z.number().default(3000).describe('Timeout in milliseconds for code execution (default: 3000ms)'),
   },
@@ -221,9 +221,9 @@ server.tool(
         accessibilitySnapshot,
         resetPlaywright: async () => {
           const { page: newPage, context: newContext } = await resetConnection()
-          
+
           Object.keys(state).forEach(key => delete state[key])
-          
+
           const resetObj: VMContext = {
             page: newPage,
             context: newContext,
