@@ -16,6 +16,7 @@ async function main() {
         console.log(`Context has ${pages.length} page(s):`)
 
         for (const page of pages) {
+            await page.emulateMedia({colorScheme: null, })
             const url = page.url()
             console.log(`\nPage URL: ${url}`)
 
