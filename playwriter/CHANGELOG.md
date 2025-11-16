@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.7
+
+### Patch Changes
+
+- Increased default timeout for execute tool from 3000ms to 5000ms
+
 ## 0.0.6
 
 ### Patch Changes
