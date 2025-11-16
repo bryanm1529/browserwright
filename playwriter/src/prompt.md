@@ -57,7 +57,9 @@ example:
 
 Then you can use `page.locator(`aria-ref=${ref}`)` to get an element with a specific `ref` and interact with it.
 
-`const componentsLink = page.locator('aria-ref=e14').click()`
+`const componentsLink = page.locator('aria-ref=e14').click()` 
+
+IMPORTANT: notice that we do not add any quotes in `aria-ref`! it MUST be called without quotes
 
 ## getting outputs of code execution
 
