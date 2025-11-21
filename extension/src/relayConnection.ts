@@ -328,7 +328,7 @@ export class RelayConnection {
         }
 
         if (!targetTab) {
-          throw new Error(`No tab found for sessionId: ${sessionId}`);
+          throw new Error(`No tab found for method ${method} sessionId: ${sessionId}`);
         }
       }
 

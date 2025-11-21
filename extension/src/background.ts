@@ -29,6 +29,9 @@ const useExtensionStore = create<ExtensionState>(() => ({
   errorText: undefined,
 }))
 
+// @ts-ignore
+globalThis.state = useExtensionStore
+
 async function resetDebugger() {
   let targets = await chrome.debugger.getTargets()
   targets = targets.filter((x) => x.tabId && x.attached)
@@ -102,7 +105,7 @@ useExtensionStore.subscribe(async (state, prevState) => {
 
   for (const tabId of allTabIds) {
     const tabInfo = tabId !== undefined ? connectedTabs.get(tabId) : undefined
-    
+
     const iconConfig = (() => {
       if (connectionState === 'error') {
         return icons.error
@@ -121,7 +124,7 @@ useExtensionStore.subscribe(async (state, prevState) => {
       }
       return icons.disconnected
     })()
-    
+
     const title = (() => {
       if (connectionState === 'error' && errorText) {
         return errorText
@@ -131,7 +134,7 @@ useExtensionStore.subscribe(async (state, prevState) => {
       }
       return iconConfig.title
     })()
-    
+
     void chrome.action.setIcon({ tabId, path: iconConfig.path })
     void chrome.action.setTitle({ tabId, title })
     if (iconConfig.badgeColor) void chrome.action.setBadgeBackgroundColor({ tabId, color: iconConfig.badgeColor })
@@ -291,7 +294,7 @@ async function connectTab(tabId: number): Promise<void> {
         state: 'error',
         errorText: `Error: ${error.message}`,
       })
-      
+
       // If we were trying to establish a connection and failed, reset the global state
       // so we don't get stuck in 'reconnecting' which triggers destructive click behavior
       let nextConnectionState = state.connectionState
