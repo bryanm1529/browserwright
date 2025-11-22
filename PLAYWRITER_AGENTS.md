@@ -16,3 +16,24 @@ read ./README.md for an overview of how this extension and mcp work
   - we need to send detachedFromTarget when we disable the extension in a tab
   - a few more events need custom handling
 - tabs are identified by sessionId or targetId (CDP concepts) or tabId (chrome debugger concept only)
+
+## development
+
+extension/ contains the chrome extension code. you need to run `pnpm build` to make it ready to be loaded in chrome. the extension folder chrome will use is extension/dist
+
+playwriter contains the ws server and MCP code. also the tests for the mcp are there. playwriter/src/prompt.md contains the docs for the MCP the agent will use. you should add there important sections that help the agent control the browser well with the MCP interface 
+
+playwriter/src/resource.md is for more generic knowledge about playwright that the agent can use when necessary, for things like best practices for selecting locators on the page
+
+## CDP docs
+
+here are some commands you can run to fetch does about CDP various domains (events and commands namespaces)
+
+```
+curl -sL https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/pdl/domains/Target.pdl # manage “targets”: pages, iframes, workers, etc., and attach/detach sessions
+curl -sL https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/pdl/domains/Browser.pdl # top-level browser control: version info, window management, permission settings, etc.
+curl -sL https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/pdl/domains/Page.pdl – navigate, reload, screenshot, PDF, frame management, dialogs, and page lifecycle events.
+curl -sL https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/pdl/domains/Emulation.pdl # emulate device metrics, viewport, timezone, locale, geolocation, media type, CPU, etc.
+```
+
+you can list other files in that folder on github to read more if you need to control things like DOM, performance, etc
