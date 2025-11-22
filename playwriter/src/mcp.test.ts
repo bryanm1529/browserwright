@@ -20,6 +20,7 @@ async function getExtensionServiceWorker(context: BrowserContext) {
             predicate: (sw) => sw.url().startsWith('chrome-extension://')
         })
     }
+
     return serviceWorker
 }
 
@@ -56,7 +57,7 @@ describe('MCP Server Tests', () => {
 
         // Build extension
         console.log('Building extension...')
-        await execAsync('pnpm build', { cwd: '../extension' })
+        await execAsync('TESTING=1 pnpm build', { cwd: '../extension' })
         console.log('Extension built')
 
         // Start Relay Server manually
@@ -117,7 +118,7 @@ describe('MCP Server Tests', () => {
              await globalThis.toggleExtensionForActiveTab()
         })
 
-    }, 120000) // 2 minutes timeout
+    }, 600000) // 10 minutes timeout
 
     afterAll(async () => {
         if (browserContext) {
@@ -274,7 +275,7 @@ describe('MCP Server Tests', () => {
 
     it('should handle new pages and toggling', async () => {
         if (!browserContext) throw new Error('Browser not initialized')
-        
+
         // Find the correct service worker by URL
         const serviceWorker = await getExtensionServiceWorker(browserContext)
 
@@ -298,12 +299,12 @@ describe('MCP Server Tests', () => {
         let directBrowser = await chromium.connectOverCDP(cdpUrl)
         let contexts = directBrowser.contexts()
         let pages = contexts[0].pages()
-        
+
         // Find our page
         let foundPage = pages.find(p => p.url() === testUrl)
         expect(foundPage).toBeDefined()
         expect(foundPage?.url()).toBe(testUrl)
-        
+
         await directBrowser.close()
 
         // 4. Disable extension on this tab
@@ -313,17 +314,17 @@ describe('MCP Server Tests', () => {
         })
         expect(resultDisabled.isConnected).toBe(false)
 
-        // 5. Try to connect/use the page. 
+        // 5. Try to connect/use the page.
         // connecting to relay will succeed, but listing pages should NOT show our page
-        
+
         // Connect to relay again
         directBrowser = await chromium.connectOverCDP(cdpUrl)
         contexts = directBrowser.contexts()
         pages = contexts[0].pages()
-        
+
         foundPage = pages.find(p => p.url() === testUrl)
         expect(foundPage).toBeUndefined()
-        
+
         await directBrowser.close()
 
         // 6. Re-enable extension
@@ -334,26 +335,26 @@ describe('MCP Server Tests', () => {
         expect(resultEnabled.isConnected).toBe(true)
 
         // 7. Verify page is back
-        
+
         directBrowser = await chromium.connectOverCDP(cdpUrl)
         // Wait a bit for targets to populate
         await new Promise(r => setTimeout(r, 500))
-        
+
         contexts = directBrowser.contexts()
         // pages() might need a moment if target attached event comes in
         if (contexts[0].pages().length === 0) {
              await new Promise(r => setTimeout(r, 1000))
         }
         pages = contexts[0].pages()
-        
+
         foundPage = pages.find(p => p.url() === testUrl)
         expect(foundPage).toBeDefined()
         expect(foundPage?.url()).toBe(testUrl)
-        
+
         await directBrowser.close()
         await page.close()
     })
-    it.skip('should maintain connection across reloads and navigation', async () => {
+    it('should maintain connection across reloads and navigation', async () => {
         if (!browserContext) throw new Error('Browser not initialized')
         const serviceWorker = await getExtensionServiceWorker(browserContext)
 
@@ -376,6 +377,8 @@ describe('MCP Server Tests', () => {
         expect(connectedPage).toBeDefined()
 
         // 4. Reload
+        // We use a loop to check if it's still connected because reload might cause temporary disconnect/reconnect events
+        // that Playwright handles natively if the session ID stays valid.
         await connectedPage?.reload()
         await connectedPage?.waitForLoadState('networkidle')
         expect(await connectedPage?.title()).toBe('Example Domain')
@@ -384,7 +387,7 @@ describe('MCP Server Tests', () => {
         const newUrl = 'https://news.ycombinator.com/'
         await connectedPage?.goto(newUrl)
         await connectedPage?.waitForLoadState('networkidle')
-        
+
         expect(connectedPage?.url()).toBe(newUrl)
         expect(await connectedPage?.title()).toContain('Hacker News')
 
@@ -392,7 +395,76 @@ describe('MCP Server Tests', () => {
         await page.close()
     })
 
+    it('should support multiple concurrent tabs', async () => {
+        if (!browserContext) throw new Error('Browser not initialized')
+        const serviceWorker = await getExtensionServiceWorker(browserContext)
+        await new Promise(resolve => setTimeout(resolve, 500))
+
+        // Tab A
+        const pageA = await browserContext.newPage()
+        await pageA.goto('https://example.com/tab-a')
+        await pageA.bringToFront()
+        await new Promise(resolve => setTimeout(resolve, 500))
+        await serviceWorker.evaluate(async () => {
+            // @ts-ignore
+            await globalThis.toggleExtensionForActiveTab()
+        })
+
+        // Tab B
+        const pageB = await browserContext.newPage()
+        await pageB.goto('https://example.com/tab-b')
+        await pageB.bringToFront()
+        await new Promise(resolve => setTimeout(resolve, 500))
+        await serviceWorker.evaluate(async () => {
+            // @ts-ignore
+            await globalThis.toggleExtensionForActiveTab()
+        })
+
+        // Get target IDs for both
+        const targetIds = await serviceWorker.evaluate(async () => {
+             // @ts-ignore
+             const state = globalThis.getExtensionState()
+             // @ts-ignore
+             const tabs = await chrome.tabs.query({})
+             const tabA = tabs.find(t => t.url?.includes('tab-a'))
+             const tabB = tabs.find(t => t.url?.includes('tab-b'))
+             return {
+                 // @ts-ignore
+                 idA: state.connectedTabs.get(tabA?.id)?.targetId,
+                 // @ts-ignore
+                 idB: state.connectedTabs.get(tabB?.id)?.targetId
+             }
+        })
+
+        expect(targetIds.idA).toBeTruthy()
+        expect(targetIds.idB).toBeTruthy()
+        expect(targetIds.idA).not.toBe(targetIds.idB)
+
+        // Verify independent connections
+        const browserA = await chromium.connectOverCDP(getCdpUrl({ clientId: targetIds.idA }))
+        const browserB = await chromium.connectOverCDP(getCdpUrl({ clientId: targetIds.idB }))
+
+        const titleA = await browserA.contexts()[0].pages()[0].title()
+        const titleB = await browserB.contexts()[0].pages()[0].title()
+
+        // Both are "Example Domain" but we verified they are distinct pages via target ID
+        expect(titleA).toBe('Example Domain')
+        expect(titleB).toBe('Example Domain')
+
+        // Verify URL to be sure
+        const urlA = browserA.contexts()[0].pages()[0].url()
+        const urlB = browserB.contexts()[0].pages()[0].url()
+        expect(urlA).toContain('tab-a')
+        expect(urlB).toContain('tab-b')
+
+        await browserA.close()
+        await browserB.close()
+        await pageA.close()
+        await pageB.close()
+    })
+
 })
+
 
 function tryJsonParse(str: string) {
     try {

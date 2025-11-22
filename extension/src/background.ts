@@ -29,7 +29,6 @@ const useExtensionStore = createStore<ExtensionState>((set) => ({
   errorText: undefined,
 }))
 
-
 // @ts-ignore
 globalThis.toggleExtensionForActiveTab = toggleExtensionForActiveTab
 
@@ -45,17 +44,17 @@ async function toggleExtensionForActiveTab(): Promise<{ isConnected: boolean; st
     const check = () => {
       const state = useExtensionStore.getState()
       const tabInfo = state.connectedTabs.get(tab.id!)
-      
+
       // If we are connecting, wait
       if (tabInfo?.state === 'connecting') {
         setTimeout(check, 100)
         return
       }
-      
+
       // Also wait if global connection is reconnecting
       if (state.connectionState === 'reconnecting') {
-         setTimeout(check, 100)
-         return
+        setTimeout(check, 100)
+        return
       }
 
       resolve()
@@ -65,13 +64,17 @@ async function toggleExtensionForActiveTab(): Promise<{ isConnected: boolean; st
 
   const state = useExtensionStore.getState()
   const isConnected = state.connectedTabs.has(tab.id) && state.connectedTabs.get(tab.id)?.state === 'connected'
-  
+
   return { isConnected, state }
 }
+
+// @ts-ignore
+globalThis.getExtensionState = () => useExtensionStore.getState()
 
 declare global {
   var state: typeof useExtensionStore
   var toggleExtensionForActiveTab: () => Promise<{ isConnected: boolean; state: ExtensionState }>
+  var getExtensionState: () => ExtensionState
 }
 
 async function resetDebugger() {
@@ -86,6 +89,9 @@ async function resetDebugger() {
 resetDebugger()
 
 chrome.runtime.onInstalled.addListener((details) => {
+  if (import.meta.env.TESTING) {
+    return
+  }
   if (details.reason === 'install') {
     void chrome.tabs.create({ url: 'welcome.html' })
   }

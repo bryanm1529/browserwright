@@ -4,25 +4,53 @@ Port: 19988
 Extension endpoint: ws://127.0.0.1:19988/extension
 CDP endpoint: ws://127.0.0.1:19988/cdp
 Extension connected with clean state
-← Extension: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1
-→ Playwright [ALL]: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1
-Playwright client connected: 1763809746705 (1 total)
-← Playwright [1763809746705]: Browser.getVersion id=1
-← Playwright [1763809746705]: Target.setAutoAttach id=2
-→ Playwright [1763809746705]: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1 (server-generated)
-← Playwright [1763809746705]: Browser.setDownloadBehavior id=3
-← Playwright [1763809746705]: Page.enable id=4, sessionId=pw-tab-1
-← Playwright [1763809746705]: Page.getFrameTree id=5, sessionId=pw-tab-1
-← Playwright [1763809746705]: Log.enable id=6, sessionId=pw-tab-1
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
-← Playwright [1763809746705]: Runtime.enable id=8, sessionId=pw-tab-1
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
-← Playwright [1763809746705]: Network.enable id=10, sessionId=pw-tab-1
-← Playwright [1763809746705]: Target.setAutoAttach id=11, sessionId=pw-tab-1
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
-← Playwright [1763809746705]: Target.getTargetInfo id=15
+← Extension: Target.attachedToTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1
+→ Playwright [ALL]: Target.attachedToTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1
+← Extension: Target.attachedToTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2
+→ Playwright [ALL]: Target.attachedToTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2
+← Extension: Target.attachedToTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3
+→ Playwright [ALL]: Target.attachedToTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3
+Playwright client connected: E3E15D82C13B4A15D3CF71E44B260036 (1 total)
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Browser.getVersion id=1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.setAutoAttach id=2
+→ Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.attachedToTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1 (server-generated)
+→ Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.attachedToTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2 (server-generated)
+→ Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.attachedToTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3 (server-generated)
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Browser.setDownloadBehavior id=3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.enable id=4, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.getFrameTree id=5, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Log.enable id=6, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.enable id=8, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Network.enable id=10, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.setAutoAttach id=11, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.enable id=15, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.getFrameTree id=16, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Log.enable id=17, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.setLifecycleEventsEnabled id=18, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.enable id=19, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.addScriptToEvaluateOnNewDocument id=20, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Network.enable id=21, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.setAutoAttach id=22, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setFocusEmulationEnabled id=23, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setEmulatedMedia id=24, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.runIfWaitingForDebugger id=25, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.enable id=26, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.getFrameTree id=27, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Log.enable id=28, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.setLifecycleEventsEnabled id=29, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.enable id=30, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.addScriptToEvaluateOnNewDocument id=31, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Network.enable id=32, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.setAutoAttach id=33, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setFocusEmulationEnabled id=34, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Emulation.setEmulatedMedia id=35, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.runIfWaitingForDebugger id=36, sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Target.getTargetInfo id=37
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
@@ -33,107 +61,105 @@ Playwright client connected: 1763809746705 (1 total)
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Target.attachedToTarget sessionId=pw-tab-1, targetId=A1254AFA6EA8AD69CD3AD8351FFEA1D9, sessionId=2995589FA14E54401349A48A44023160
-→ Playwright [ALL]: Target.attachedToTarget targetId=A1254AFA6EA8AD69CD3AD8351FFEA1D9, sessionId=2995589FA14E54401349A48A44023160
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Playwright [1763809746705]: Page.createIsolatedWorld id=16, sessionId=pw-tab-1
-← Playwright [1763809746705]: Runtime.enable id=17, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=18, sessionId=2995589FA14E54401349A48A44023160
-Error handling CDP command: Runtime.enable {} Error: No tab found for method Runtime.enable sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
+← Extension: Log.entryAdded sessionId=pw-tab-2
+→ Playwright [ALL]: Log.entryAdded sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-2
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-2
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-2
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-2
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-2
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.createIsolatedWorld id=38, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.createIsolatedWorld id=39, sessionId=pw-tab-2
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Page.createIsolatedWorld id=40, sessionId=pw-tab-3
+Playwright client connected: 16E435409CFBF47529751B04E9F9021D (2 total)
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No tab found for method Runtime.runIfWaitingForDebugger sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-← Playwright [1763809746705]: Target.createTarget id=19
-← Extension: Target.attachedToTarget targetId=F8E44A38F98069EB0438396950C15237, sessionId=pw-tab-2
-→ Playwright [ALL]: Target.attachedToTarget targetId=F8E44A38F98069EB0438396950C15237, sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.enable id=20, sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.getFrameTree id=21, sessionId=pw-tab-2
-← Playwright [1763809746705]: Log.enable id=22, sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=23, sessionId=pw-tab-2
-← Playwright [1763809746705]: Runtime.enable id=24, sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=25, sessionId=pw-tab-2
-← Playwright [1763809746705]: Network.enable id=26, sessionId=pw-tab-2
-← Playwright [1763809746705]: Target.setAutoAttach id=27, sessionId=pw-tab-2
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=28, sessionId=pw-tab-2
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=29, sessionId=pw-tab-2
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=30, sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.createIsolatedWorld id=31, sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Playwright [1763809746705]: Page.navigate id=32, sessionId=pw-tab-2
-← Extension: Page.frameStartedNavigating sessionId=pw-tab-2
-→ Playwright [ALL]: Page.frameStartedNavigating sessionId=pw-tab-2
-← Extension: Page.frameStartedLoading sessionId=pw-tab-2
-→ Playwright [ALL]: Page.frameStartedLoading sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Runtime.executionContextsCleared sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextsCleared sessionId=pw-tab-2
-← Extension: Page.frameNavigated sessionId=pw-tab-2
-→ Playwright [ALL]: Page.frameNavigated sessionId=pw-tab-2
-← Extension: Network.policyUpdated sessionId=pw-tab-2
-→ Playwright [ALL]: Network.policyUpdated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Browser.getVersion id=1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Target.setAutoAttach id=2
+→ Playwright [16E435409CFBF47529751B04E9F9021D]: Target.attachedToTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1 (server-generated)
+→ Playwright [16E435409CFBF47529751B04E9F9021D]: Target.attachedToTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2 (server-generated)
+→ Playwright [16E435409CFBF47529751B04E9F9021D]: Target.attachedToTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3 (server-generated)
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Browser.setDownloadBehavior id=3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.enable id=4, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.getFrameTree id=5, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Log.enable id=6, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.enable id=8, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Network.enable id=10, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Target.setAutoAttach id=11, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.enable id=15, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.getFrameTree id=16, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Log.enable id=17, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.setLifecycleEventsEnabled id=18, sessionId=pw-tab-2
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.enable id=19, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.addScriptToEvaluateOnNewDocument id=20, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Network.enable id=21, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Target.setAutoAttach id=22, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setFocusEmulationEnabled id=23, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setEmulatedMedia id=24, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.runIfWaitingForDebugger id=25, sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.enable id=26, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.getFrameTree id=27, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Log.enable id=28, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.setLifecycleEventsEnabled id=29, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.enable id=30, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.addScriptToEvaluateOnNewDocument id=31, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Network.enable id=32, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Target.setAutoAttach id=33, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setFocusEmulationEnabled id=34, sessionId=pw-tab-3
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-1
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Network.resourceChangedPriority sessionId=pw-tab-2
-→ Playwright [ALL]: Network.resourceChangedPriority sessionId=pw-tab-2
-← Extension: Network.resourceChangedPriority sessionId=pw-tab-2
-→ Playwright [ALL]: Network.resourceChangedPriority sessionId=pw-tab-2
-← Extension: Page.domContentEventFired sessionId=pw-tab-2
-→ Playwright [ALL]: Page.domContentEventFired sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-1
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
+← Extension: Page.lifecycleEvent sessionId=pw-tab-1
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-2
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-2
@@ -142,39 +168,18 @@ Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No 
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-2
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Emulation.setEmulatedMedia id=35, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.runIfWaitingForDebugger id=36, sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Target.getTargetInfo id=37
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.createIsolatedWorld id=38, sessionId=pw-tab-1
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-2
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.loadEventFired sessionId=pw-tab-2
-→ Playwright [ALL]: Page.loadEventFired sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.frameStoppedLoading sessionId=pw-tab-2
-→ Playwright [ALL]: Page.frameStoppedLoading sessionId=pw-tab-2
-← Playwright [1763809746705]: Runtime.evaluate id=33, sessionId=pw-tab-2
-← Playwright [1763809746705]: Runtime.callFunctionOn id=34, sessionId=pw-tab-2
-← Playwright [1763809746705]: Target.createTarget id=35
-← Extension: Target.attachedToTarget targetId=E19E04530B54467BD124CA8C86C4E6B2, sessionId=pw-tab-3
-→ Playwright [ALL]: Target.attachedToTarget targetId=E19E04530B54467BD124CA8C86C4E6B2, sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.enable id=36, sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.getFrameTree id=37, sessionId=pw-tab-3
-← Playwright [1763809746705]: Log.enable id=38, sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=39, sessionId=pw-tab-3
-← Playwright [1763809746705]: Runtime.enable id=40, sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=41, sessionId=pw-tab-3
-← Playwright [1763809746705]: Network.enable id=42, sessionId=pw-tab-3
-← Playwright [1763809746705]: Target.setAutoAttach id=43, sessionId=pw-tab-3
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=44, sessionId=pw-tab-3
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=45, sessionId=pw-tab-3
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=46, sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.createIsolatedWorld id=47, sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
 ← Extension: Page.lifecycleEvent sessionId=pw-tab-3
 → Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
@@ -183,495 +188,38 @@ Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No 
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.createIsolatedWorld id=39, sessionId=pw-tab-2
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Page.lifecycleEvent sessionId=pw-tab-3
+→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Page.createIsolatedWorld id=40, sessionId=pw-tab-3
+← Extension: Runtime.executionContextCreated sessionId=pw-tab-2
+→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-2
 ← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
 → Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
-← Playwright [1763809746705]: Page.navigate id=48, sessionId=pw-tab-3
-← Extension: Page.frameStartedNavigating sessionId=pw-tab-3
-→ Playwright [ALL]: Page.frameStartedNavigating sessionId=pw-tab-3
-← Extension: Page.frameStartedLoading sessionId=pw-tab-3
-→ Playwright [ALL]: Page.frameStartedLoading sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Runtime.executionContextsCleared sessionId=pw-tab-3
-→ Playwright [ALL]: Runtime.executionContextsCleared sessionId=pw-tab-3
-← Extension: Page.frameNavigated sessionId=pw-tab-3
-→ Playwright [ALL]: Page.frameNavigated sessionId=pw-tab-3
-← Extension: Network.policyUpdated sessionId=pw-tab-3
-→ Playwright [ALL]: Network.policyUpdated sessionId=pw-tab-3
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-3
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-3
-← Extension: Network.resourceChangedPriority sessionId=pw-tab-3
-→ Playwright [ALL]: Network.resourceChangedPriority sessionId=pw-tab-3
-← Extension: Page.domContentEventFired sessionId=pw-tab-3
-→ Playwright [ALL]: Page.domContentEventFired sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.loadEventFired sessionId=pw-tab-3
-→ Playwright [ALL]: Page.loadEventFired sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.frameStoppedLoading sessionId=pw-tab-3
-→ Playwright [ALL]: Page.frameStoppedLoading sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Extension: Page.lifecycleEvent sessionId=pw-tab-2
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-2
-← Playwright [1763809746705]: Runtime.evaluate id=49, sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-3
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-3
-← Playwright [1763809746705]: Runtime.evaluate id=50, sessionId=pw-tab-3
-← Playwright [1763809746705]: Runtime.callFunctionOn id=51, sessionId=pw-tab-3
-← Playwright [1763809746705]: Target.createTarget id=52
-← Extension: Target.attachedToTarget targetId=4AF0FF87335350BBC4C1CBCA6121133F, sessionId=pw-tab-4
-→ Playwright [ALL]: Target.attachedToTarget targetId=4AF0FF87335350BBC4C1CBCA6121133F, sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.enable id=53, sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.getFrameTree id=54, sessionId=pw-tab-4
-← Playwright [1763809746705]: Log.enable id=55, sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=56, sessionId=pw-tab-4
-← Playwright [1763809746705]: Runtime.enable id=57, sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=58, sessionId=pw-tab-4
-← Playwright [1763809746705]: Network.enable id=59, sessionId=pw-tab-4
-← Playwright [1763809746705]: Target.setAutoAttach id=60, sessionId=pw-tab-4
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=61, sessionId=pw-tab-4
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=62, sessionId=pw-tab-4
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=63, sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.createIsolatedWorld id=64, sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Playwright [1763809746705]: Page.navigate id=65, sessionId=pw-tab-4
-← Extension: Page.frameStartedNavigating sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameStartedNavigating sessionId=pw-tab-4
-← Extension: Page.frameStartedLoading sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameStartedLoading sessionId=pw-tab-4
-← Extension: Network.responseReceivedEarlyHints sessionId=pw-tab-4
-→ Playwright [ALL]: Network.responseReceivedEarlyHints sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Runtime.executionContextsCleared sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextsCleared sessionId=pw-tab-4
-← Extension: Page.frameNavigated sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameNavigated sessionId=pw-tab-4
-← Extension: Network.policyUpdated sessionId=pw-tab-4
-→ Playwright [ALL]: Network.policyUpdated sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-4
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-4
-← Extension: Page.domContentEventFired sessionId=pw-tab-4
-→ Playwright [ALL]: Page.domContentEventFired sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.loadEventFired sessionId=pw-tab-4
-→ Playwright [ALL]: Page.loadEventFired sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.frameStoppedLoading sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameStoppedLoading sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.frameStartedLoading sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameStartedLoading sessionId=pw-tab-4
-← Extension: Page.navigatedWithinDocument sessionId=pw-tab-4
-→ Playwright [ALL]: Page.navigatedWithinDocument sessionId=pw-tab-4
-← Extension: Page.frameStoppedLoading sessionId=pw-tab-4
-→ Playwright [ALL]: Page.frameStoppedLoading sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Playwright [1763809746705]: Runtime.evaluate id=66, sessionId=pw-tab-4
-← Playwright [1763809746705]: Runtime.evaluate id=67, sessionId=pw-tab-4
-← Playwright [1763809746705]: Runtime.callFunctionOn id=68, sessionId=pw-tab-4
-← Playwright [1763809746705]: Target.closeTarget id=69
-← Extension: Inspector.detached sessionId=pw-tab-2
-→ Playwright [ALL]: Inspector.detached sessionId=pw-tab-2
-← Extension: Target.detachedFromTarget targetId=F8E44A38F98069EB0438396950C15237, sessionId=pw-tab-2
-→ Playwright [ALL]: Target.detachedFromTarget targetId=F8E44A38F98069EB0438396950C15237, sessionId=pw-tab-2
-← Playwright [1763809746705]: Target.closeTarget id=70
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.evaluate id=41, sessionId=pw-tab-1
+← Playwright [E3E15D82C13B4A15D3CF71E44B260036]: Runtime.callFunctionOn id=42, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.evaluate id=41, sessionId=pw-tab-1
+← Playwright [16E435409CFBF47529751B04E9F9021D]: Runtime.callFunctionOn id=42, sessionId=pw-tab-1
 ← Extension: Inspector.detached sessionId=pw-tab-3
 → Playwright [ALL]: Inspector.detached sessionId=pw-tab-3
-← Extension: Target.detachedFromTarget targetId=E19E04530B54467BD124CA8C86C4E6B2, sessionId=pw-tab-3
-→ Playwright [ALL]: Target.detachedFromTarget targetId=E19E04530B54467BD124CA8C86C4E6B2, sessionId=pw-tab-3
-← Extension: Page.lifecycleEvent sessionId=pw-tab-4
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-4
-← Playwright [1763809746705]: Target.closeTarget id=71
-← Extension: Target.detachedFromTarget targetId=4AF0FF87335350BBC4C1CBCA6121133F, sessionId=pw-tab-4
-→ Playwright [ALL]: Target.detachedFromTarget targetId=4AF0FF87335350BBC4C1CBCA6121133F, sessionId=pw-tab-4
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-5
-→ Playwright [ALL]: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-5
-← Playwright [1763809746705]: Page.enable id=72, sessionId=pw-tab-5
-← Playwright [1763809746705]: Page.getFrameTree id=73, sessionId=pw-tab-5
-← Playwright [1763809746705]: Log.enable id=74, sessionId=pw-tab-5
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=75, sessionId=pw-tab-5
-← Playwright [1763809746705]: Runtime.enable id=76, sessionId=pw-tab-5
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=77, sessionId=pw-tab-5
-← Playwright [1763809746705]: Network.enable id=78, sessionId=pw-tab-5
-← Playwright [1763809746705]: Target.setAutoAttach id=79, sessionId=pw-tab-5
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=80, sessionId=pw-tab-5
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=81, sessionId=pw-tab-5
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=82, sessionId=pw-tab-5
-Playwright client connected: 1763809751692 (2 total)
-← Playwright [1763809751692]: Browser.getVersion id=1
-← Playwright [1763809751692]: Target.setAutoAttach id=2
-← Playwright [1763809751692]: Browser.setDownloadBehavior id=3
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1 (server-generated)
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=A1254AFA6EA8AD69CD3AD8351FFEA1D9, sessionId=2995589FA14E54401349A48A44023160 (server-generated)
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-5 (server-generated)
-← Playwright [1763809751692]: Page.enable id=4, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.getFrameTree id=5, sessionId=pw-tab-1
-← Playwright [1763809751692]: Log.enable id=6, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=8, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
-← Playwright [1763809751692]: Network.enable id=10, sessionId=pw-tab-1
-← Playwright [1763809751692]: Target.setAutoAttach id=11, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=15, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=16, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Page.enable id=17, sessionId=pw-tab-5
-← Playwright [1763809751692]: Page.getFrameTree id=18, sessionId=pw-tab-5
-← Playwright [1763809751692]: Log.enable id=19, sessionId=pw-tab-5
-← Playwright [1763809751692]: Page.setLifecycleEventsEnabled id=20, sessionId=pw-tab-5
-← Playwright [1763809751692]: Runtime.enable id=21, sessionId=pw-tab-5
-← Playwright [1763809751692]: Page.addScriptToEvaluateOnNewDocument id=22, sessionId=pw-tab-5
-← Playwright [1763809751692]: Network.enable id=23, sessionId=pw-tab-5
-← Playwright [1763809751692]: Target.setAutoAttach id=24, sessionId=pw-tab-5
-← Playwright [1763809751692]: Emulation.setFocusEmulationEnabled id=25, sessionId=pw-tab-5
-← Playwright [1763809751692]: Emulation.setEmulatedMedia id=26, sessionId=pw-tab-5
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=27, sessionId=pw-tab-5
-← Playwright [1763809751692]: Target.getTargetInfo id=28
-Error handling CDP command: Runtime.enable {} Error: No tab found for method Runtime.enable sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No tab found for method Runtime.runIfWaitingForDebugger sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Playwright [1763809746705]: Page.createIsolatedWorld id=83, sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Page.lifecycleEvent sessionId=pw-tab-5
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Playwright [1763809751692]: Page.createIsolatedWorld id=29, sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-← Playwright [1763809751692]: Page.createIsolatedWorld id=30, sessionId=pw-tab-5
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-5
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-5
-Playwright client disconnected: 1763809751692 (1 remaining)
-← Extension: Target.detachedFromTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-5
-→ Playwright [ALL]: Target.detachedFromTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-5
-Playwright client connected: 1763809751692 (2 total)
-← Playwright [1763809751692]: Browser.getVersion id=1
-← Playwright [1763809751692]: Target.setAutoAttach id=2
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1 (server-generated)
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=A1254AFA6EA8AD69CD3AD8351FFEA1D9, sessionId=2995589FA14E54401349A48A44023160 (server-generated)
-← Playwright [1763809751692]: Browser.setDownloadBehavior id=3
-← Playwright [1763809751692]: Page.enable id=4, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.getFrameTree id=5, sessionId=pw-tab-1
-← Playwright [1763809751692]: Log.enable id=6, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=8, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
-← Playwright [1763809751692]: Network.enable id=10, sessionId=pw-tab-1
-← Playwright [1763809751692]: Target.setAutoAttach id=11, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=15, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=16, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Target.getTargetInfo id=17
-Error handling CDP command: Runtime.enable {} Error: No tab found for method Runtime.enable sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No tab found for method Runtime.runIfWaitingForDebugger sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-← Playwright [1763809751692]: Page.createIsolatedWorld id=18, sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-Playwright client disconnected: 1763809751692 (1 remaining)
-← Extension: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-6
-→ Playwright [ALL]: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-6
-← Playwright [1763809746705]: Page.enable id=84, sessionId=pw-tab-6
-← Playwright [1763809746705]: Page.getFrameTree id=85, sessionId=pw-tab-6
-← Playwright [1763809746705]: Log.enable id=86, sessionId=pw-tab-6
-← Playwright [1763809746705]: Page.setLifecycleEventsEnabled id=87, sessionId=pw-tab-6
-← Playwright [1763809746705]: Runtime.enable id=88, sessionId=pw-tab-6
-← Playwright [1763809746705]: Page.addScriptToEvaluateOnNewDocument id=89, sessionId=pw-tab-6
-← Playwright [1763809746705]: Network.enable id=90, sessionId=pw-tab-6
-← Playwright [1763809746705]: Target.setAutoAttach id=91, sessionId=pw-tab-6
-← Playwright [1763809746705]: Emulation.setFocusEmulationEnabled id=92, sessionId=pw-tab-6
-← Playwright [1763809746705]: Emulation.setEmulatedMedia id=93, sessionId=pw-tab-6
-← Playwright [1763809746705]: Runtime.runIfWaitingForDebugger id=94, sessionId=pw-tab-6
-Playwright client connected: 1763809751692 (2 total)
-← Playwright [1763809751692]: Browser.getVersion id=1
-← Playwright [1763809751692]: Target.setAutoAttach id=2
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1 (server-generated)
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=A1254AFA6EA8AD69CD3AD8351FFEA1D9, sessionId=2995589FA14E54401349A48A44023160 (server-generated)
-→ Playwright [1763809751692]: Target.attachedToTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-6 (server-generated)
-← Playwright [1763809751692]: Browser.setDownloadBehavior id=3
-← Playwright [1763809751692]: Page.enable id=4, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.getFrameTree id=5, sessionId=pw-tab-1
-← Playwright [1763809751692]: Log.enable id=6, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.setLifecycleEventsEnabled id=7, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=8, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.addScriptToEvaluateOnNewDocument id=9, sessionId=pw-tab-1
-← Playwright [1763809751692]: Network.enable id=10, sessionId=pw-tab-1
-← Playwright [1763809751692]: Target.setAutoAttach id=11, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setFocusEmulationEnabled id=12, sessionId=pw-tab-1
-← Playwright [1763809751692]: Emulation.setEmulatedMedia id=13, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=14, sessionId=pw-tab-1
-← Playwright [1763809751692]: Runtime.enable id=15, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=16, sessionId=2995589FA14E54401349A48A44023160
-← Playwright [1763809751692]: Page.enable id=17, sessionId=pw-tab-6
-← Playwright [1763809751692]: Page.getFrameTree id=18, sessionId=pw-tab-6
-← Playwright [1763809751692]: Log.enable id=19, sessionId=pw-tab-6
-← Playwright [1763809751692]: Page.setLifecycleEventsEnabled id=20, sessionId=pw-tab-6
-← Playwright [1763809751692]: Runtime.enable id=21, sessionId=pw-tab-6
-← Playwright [1763809751692]: Page.addScriptToEvaluateOnNewDocument id=22, sessionId=pw-tab-6
-← Playwright [1763809751692]: Network.enable id=23, sessionId=pw-tab-6
-← Playwright [1763809751692]: Target.setAutoAttach id=24, sessionId=pw-tab-6
-← Playwright [1763809751692]: Emulation.setFocusEmulationEnabled id=25, sessionId=pw-tab-6
-← Playwright [1763809751692]: Emulation.setEmulatedMedia id=26, sessionId=pw-tab-6
-← Playwright [1763809751692]: Runtime.runIfWaitingForDebugger id=27, sessionId=pw-tab-6
-← Playwright [1763809751692]: Target.getTargetInfo id=28
-Error handling CDP command: Runtime.enable {} Error: No tab found for method Runtime.enable sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-Error handling CDP command: Runtime.runIfWaitingForDebugger undefined Error: No tab found for method Runtime.runIfWaitingForDebugger sessionId: 2995589FA14E54401349A48A44023160
-    at Object.onMessage (/Users/morse/Documents/GitHub/playwriter/playwriter/src/extension/cdp-relay.ts:389:28)
-    at handleMessage (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:112:34)
-    at WebSocket.<anonymous> (file:///Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/@hono+node-ws@1.2.0_@hono+node-server@1.19.6_hono@4.10.6__hono@4.10.6/node_modules/@hono/node-ws/dist/index.js:129:11)
-    at WebSocket.emit (node:events:519:28)
-    at Receiver.receiverOnMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/websocket.js:1220:20)
-    at Receiver.emit (node:events:519:28)
-    at Receiver.dataMessage (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:596:14)
-    at Receiver.getData (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:496:10)
-    at Receiver.startLoop (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:167:16)
-    at Receiver._write (/Users/morse/Documents/GitHub/playwriter/node_modules/.pnpm/ws@8.18.3/node_modules/ws/lib/receiver.js:94:10)
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Playwright [1763809746705]: Page.createIsolatedWorld id=95, sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-1
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-1
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Playwright [1763809751692]: Page.createIsolatedWorld id=29, sessionId=pw-tab-1
-← Playwright [1763809751692]: Page.createIsolatedWorld id=30, sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-1
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-1
-← Extension: Runtime.executionContextCreated sessionId=pw-tab-6
-→ Playwright [ALL]: Runtime.executionContextCreated sessionId=pw-tab-6
-Playwright client disconnected: 1763809751692 (1 remaining)
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Page.lifecycleEvent sessionId=pw-tab-6
-→ Playwright [ALL]: Page.lifecycleEvent sessionId=pw-tab-6
-← Extension: Inspector.detached sessionId=pw-tab-6
-→ Playwright [ALL]: Inspector.detached sessionId=pw-tab-6
-← Extension: Target.detachedFromTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-6
-→ Playwright [ALL]: Target.detachedFromTarget targetId=D996C25CCE9754826D023DB668436E1F, sessionId=pw-tab-6
-← Extension: Target.detachedFromTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1
-→ Playwright [ALL]: Target.detachedFromTarget targetId=502169A3A5D4381DEAABFDAA7045AC36, sessionId=pw-tab-1
+← Extension: Inspector.detached sessionId=pw-tab-2
+→ Playwright [ALL]: Inspector.detached sessionId=pw-tab-2
+← Extension: Inspector.detached sessionId=pw-tab-1
+→ Playwright [ALL]: Inspector.detached sessionId=pw-tab-1
+← Extension: Target.detachedFromTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3
+→ Playwright [ALL]: Target.detachedFromTarget targetId=16E435409CFBF47529751B04E9F9021D, sessionId=pw-tab-3
+← Extension: Target.detachedFromTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2
+→ Playwright [ALL]: Target.detachedFromTarget targetId=E3E15D82C13B4A15D3CF71E44B260036, sessionId=pw-tab-2
+← Extension: Target.detachedFromTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1
+→ Playwright [ALL]: Target.detachedFromTarget targetId=37BE179F93AF8207BD1E2372B9C515BA, sessionId=pw-tab-1
 Extension disconnected
-Playwright client disconnected: 1763809746705 (0 remaining)
+Playwright client disconnected: E3E15D82C13B4A15D3CF71E44B260036 (0 remaining)
+Playwright client disconnected: 16E435409CFBF47529751B04E9F9021D (0 remaining)
