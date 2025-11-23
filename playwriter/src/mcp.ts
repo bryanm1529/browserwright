@@ -53,6 +53,11 @@ interface VMContext {
   }) => Promise<string>
   getLocatorStringForElement: (element: any) => Promise<string>
   resetPlaywright: () => Promise<{ page: Page; context: BrowserContext }>
+  getLatestLogs: (options?: {
+    page?: Page
+    count?: number
+    searchFilter?: string | RegExp
+  }) => Promise<string[]>
   require: NodeRequire
   import: (specifier: string) => Promise<any>
 }
@@ -67,6 +72,10 @@ const state: State = {
   browser: null,
   context: null,
 }
+
+// Store logs per page targetId
+const browserLogs: Map<string, string[]> = new Map()
+const MAX_LOGS_PER_PAGE = 5000
 
 const RELAY_PORT = 19988
 
@@ -117,8 +126,16 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
   const contexts = browser.contexts()
   const context = contexts.length > 0 ? contexts[0] : await browser.newContext()
 
+  // Set up console listener for all pages
+  context.on('page', (page) => {
+    setupPageConsoleListener(page)
+  })
+
   const pages = context.pages()
   const page = pages.length > 0 ? pages[0] : await context.newPage()
+  
+  // Set up console listener for existing pages
+  pages.forEach(p => setupPageConsoleListener(p))
 
   state.browser = browser
   state.page = page
@@ -126,6 +143,59 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
   state.isConnected = true
 
   return { browser, page }
+}
+
+async function getPageTargetId(page: Page): Promise<string> {
+  try {
+    // Get CDP session and fetch target info
+    const client = await page.context().newCDPSession(page)
+    const { targetInfo } = await client.send('Target.getTargetInfo')
+    await client.detach()
+    
+    return targetInfo.targetId
+  } catch (e) {
+    // Fallback to using internal _guid if CDP fails
+    const guid = (page as any)._guid
+    if (guid) {
+      return guid
+    }
+    throw new Error('Could not get page identifier')
+  }
+}
+
+function setupPageConsoleListener(page: Page) {
+  // Get targetId once when setting up the listener
+  getPageTargetId(page).then(targetId => {
+    // Clear logs on navigation/reload
+    page.on('framenavigated', (frame) => {
+      // Only clear if it's the main frame navigating (page reload/navigation)
+      if (frame === page.mainFrame()) {
+        browserLogs.set(targetId, [])
+      }
+    })
+    
+    // Delete logs when page is closed
+    page.on('close', () => {
+      browserLogs.delete(targetId)
+    })
+    
+    page.on('console', (msg) => {
+      const logEntry = `[${msg.type()}] ${msg.text()}`
+      
+      // Get or create logs array for this page targetId
+      if (!browserLogs.has(targetId)) {
+        browserLogs.set(targetId, [])
+      }
+      const pageLogs = browserLogs.get(targetId)!
+      
+      pageLogs.push(logEntry)
+      if (pageLogs.length > MAX_LOGS_PER_PAGE) {
+        pageLogs.shift()
+      }
+    })
+  }).catch(err => {
+    // Silently fail - page might be closed or CDP might not be available
+  })
 }
 
 async function getCurrentPage(timeout = 5000) {
@@ -172,8 +242,16 @@ async function resetConnection(): Promise<{ browser: Browser; page: Page; contex
   const contexts = browser.contexts()
   const context = contexts.length > 0 ? contexts[0] : await browser.newContext()
 
+  // Set up console listener for all pages
+  context.on('page', (page) => {
+    setupPageConsoleListener(page)
+  })
+
   const pages = context.pages()
   const page = pages.length > 0 ? pages[0] : await context.newPage()
+  
+  // Set up console listener for existing pages
+  pages.forEach(p => setupPageConsoleListener(p))
 
   state.browser = browser
   state.page = page
@@ -307,6 +385,43 @@ server.tool(
         })
       }
 
+      const getLatestLogs = async (options?: {
+        page?: Page
+        count?: number
+        searchFilter?: string | RegExp
+      }) => {
+        const { page: filterPage, count, searchFilter } = options || {}
+        
+        let allLogs: string[] = []
+        
+        // Get logs from specific page or all pages
+        if (filterPage) {
+          const targetId = await getPageTargetId(filterPage)
+          const pageLogs = browserLogs.get(targetId) || []
+          allLogs = [...pageLogs]
+        } else {
+          // Combine logs from all pages
+          for (const pageLogs of browserLogs.values()) {
+            allLogs.push(...pageLogs)
+          }
+        }
+        
+        // Filter by search string or regex
+        if (searchFilter) {
+          allLogs = allLogs.filter(log => {
+            if (typeof searchFilter === 'string') {
+              return log.includes(searchFilter)
+            } else if (searchFilter instanceof RegExp) {
+              return searchFilter.test(log)
+            }
+            return false
+          })
+        }
+        
+        // Return all logs or limited count
+        return count !== undefined ? allLogs.slice(-count) : allLogs
+      }
+
       let vmContextObj: VMContextWithGlobals = {
         page,
         context,
@@ -314,6 +429,7 @@ server.tool(
         console: customConsole,
         accessibilitySnapshot,
         getLocatorStringForElement,
+        getLatestLogs,
         resetPlaywright: async () => {
           const { page: newPage, context: newContext } = await resetConnection()
 
@@ -326,6 +442,7 @@ server.tool(
             console: customConsole,
             accessibilitySnapshot,
             getLocatorStringForElement,
+            getLatestLogs,
             resetPlaywright: vmContextObj.resetPlaywright,
             require,
             import: vmContextObj.import,

@@ -711,6 +711,317 @@ describe('MCP Server Tests', () => {
         await page.close()
     })
 
+    it('should capture browser console logs with getLatestLogs', async () => {
+        // Create a new page for this test
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const newPage = await context.newPage();
+          state.testLogPage = newPage;
+          await newPage.goto('about:blank');
+        `,
+            },
+        })
+
+        // Generate some console logs in the browser
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.testLogPage.evaluate(() => {
+            console.log('Test log 12345');
+            console.error('Test error 67890');
+            console.warn('Test warning 11111');
+            console.log('Test log 2 with', { data: 'object' });
+          });
+          // Wait for logs to be captured
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Test getting all logs
+        const allLogsResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs();
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const output = (allLogsResult as any).content[0].text
+        expect(output).toContain('[log] Test log 12345')
+        expect(output).toContain('[error] Test error 67890')
+        expect(output).toContain('[warning] Test warning 11111')
+
+        // Test filtering by search string
+        const errorLogsResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ searchFilter: 'error' });
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const errorOutput = (errorLogsResult as any).content[0].text
+        expect(errorOutput).toContain('[error] Test error 67890')
+        expect(errorOutput).not.toContain('[log] Test log 12345')
+
+        // Test that logs are cleared on page reload
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          // First add a log before reload
+          await state.testLogPage.evaluate(() => {
+            console.log('Before reload 99999');
+          });
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Verify the log exists
+        const beforeReloadResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.testLogPage });
+          console.log('Logs before reload:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+        
+        const beforeReloadOutput = (beforeReloadResult as any).content[0].text
+        expect(beforeReloadOutput).toContain('[log] Before reload 99999')
+
+        // Reload the page
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.testLogPage.reload();
+          await state.testLogPage.evaluate(() => {
+            console.log('After reload 88888');
+          });
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Check logs after reload - old logs should be gone
+        const afterReloadResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.testLogPage });
+          console.log('Logs after reload:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+        
+        const afterReloadOutput = (afterReloadResult as any).content[0].text
+        expect(afterReloadOutput).toContain('[log] After reload 88888')
+        expect(afterReloadOutput).not.toContain('[log] Before reload 99999')
+
+        // Clean up
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.testLogPage.close();
+          delete state.testLogPage;
+        `,
+            },
+        })
+    }, 30000)
+
+    it('should keep logs separate between different pages', async () => {
+        // Create two pages
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          state.pageA = await context.newPage();
+          state.pageB = await context.newPage();
+          await state.pageA.goto('about:blank');
+          await state.pageB.goto('about:blank');
+        `,
+            },
+        })
+
+        // Generate logs in page A
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.pageA.evaluate(() => {
+            console.log('PageA log 11111');
+            console.error('PageA error 22222');
+          });
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Generate logs in page B
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.pageB.evaluate(() => {
+            console.log('PageB log 33333');
+            console.error('PageB error 44444');
+          });
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Check logs for page A - should only have page A logs
+        const pageALogsResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.pageA });
+          console.log('Page A logs:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const pageAOutput = (pageALogsResult as any).content[0].text
+        expect(pageAOutput).toContain('[log] PageA log 11111')
+        expect(pageAOutput).toContain('[error] PageA error 22222')
+        expect(pageAOutput).not.toContain('PageB')
+
+        // Check logs for page B - should only have page B logs
+        const pageBLogsResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.pageB });
+          console.log('Page B logs:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const pageBOutput = (pageBLogsResult as any).content[0].text
+        expect(pageBOutput).toContain('[log] PageB log 33333')
+        expect(pageBOutput).toContain('[error] PageB error 44444')
+        expect(pageBOutput).not.toContain('PageA')
+
+        // Check all logs - should have logs from both pages
+        const allLogsResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs();
+          console.log('All logs:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const allOutput = (allLogsResult as any).content[0].text
+        expect(allOutput).toContain('[log] PageA log 11111')
+        expect(allOutput).toContain('[log] PageB log 33333')
+
+        // Test that reloading page A clears only page A logs
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.pageA.reload();
+          await state.pageA.evaluate(() => {
+            console.log('PageA after reload 55555');
+          });
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Check page A logs - should only have new log
+        const pageAAfterReloadResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.pageA });
+          console.log('Page A logs after reload:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const pageAAfterReloadOutput = (pageAAfterReloadResult as any).content[0].text
+        expect(pageAAfterReloadOutput).toContain('[log] PageA after reload 55555')
+        expect(pageAAfterReloadOutput).not.toContain('[log] PageA log 11111')
+
+        // Check page B logs - should still have original logs
+        const pageBAfterAReloadResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs({ page: state.pageB });
+          console.log('Page B logs after A reload:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const pageBAfterAReloadOutput = (pageBAfterAReloadResult as any).content[0].text
+        expect(pageBAfterAReloadOutput).toContain('[log] PageB log 33333')
+        expect(pageBAfterAReloadOutput).toContain('[error] PageB error 44444')
+
+        // Test that logs are deleted when page is closed
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          // Close page A
+          await state.pageA.close();
+          await new Promise(resolve => setTimeout(resolve, 100));
+        `,
+            },
+        })
+
+        // Check all logs - page A logs should be gone
+        const logsAfterCloseResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const logs = await getLatestLogs();
+          console.log('All logs after closing page A:', logs.length);
+          logs.forEach(log => console.log(log));
+        `,
+            },
+        })
+
+        const logsAfterCloseOutput = (logsAfterCloseResult as any).content[0].text
+        expect(logsAfterCloseOutput).not.toContain('PageA')
+        expect(logsAfterCloseOutput).toContain('[log] PageB log 33333')
+
+        // Clean up remaining page
+        await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          await state.pageB.close();
+          delete state.pageA;
+          delete state.pageB;
+        `,
+            },
+        })
+    }, 30000)
+
 })
 
 

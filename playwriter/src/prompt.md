@@ -4,6 +4,8 @@ if you get an error Extension not running tell user to install and enable the pl
 
 execute tool let you run playwright js code snippets to control user Chrome window, these js code snippets are preferred to be in a single line to make them more readable in agent interface. separating statements with semicolons
 
+you can extract data from your script using `console.log`. But remember that console.log in `page.evaluate` callbacks are run in the browser, so you will not see them. Instead log the evaluate result
+
 you MUST use multiple execute tool calls for running complex logic. this ensures 
 - you have clear understanding of intermediate state between interactions
 - you can split finding an element from interacting with it. making it simpler to understand what is the issue when an action is not successful
@@ -72,6 +74,10 @@ you have access to some functions in addition to playwright methods:
     - `searchString`: (optional) a string or regex to filter the snapshot. If provided, returns the first 10 matches with surrounding context
     - `contextLines`: (optional) number of lines of context to show around each match (default: 10)
 - `async resetPlaywright()`: recreates the CDP connection and resets the browser/page/context. Use this when the MCP stops responding, you get connection errors, assertion failures, or timeout issues. After calling this, the page and context variables are automatically updated in the execution environment. IMPORTANT: this completely resets the execution context, removing any custom properties you may have added to the global scope AND clearing all keys from the `state` object. Only `page`, `context`, `state` (empty), `console`, and utility functions will remain
+- `getLatestLogs({ page, count, searchFilter })`: retrieves browser console logs. The system automatically captures and stores up to 5000 logs per page. Logs are cleared when a page reloads or navigates.
+    - `page`: (optional) filter logs by a specific page instance. Only returns logs from that page
+    - `count`: (optional) limit number of logs to return. If not specified, returns all available logs
+    - `searchFilter`: (optional) string or regex to filter logs. Only returns logs that match
 
 To bring a tab to front and focus it, use the standard Playwright method `await page.bringToFront()`
 
@@ -166,6 +172,33 @@ later, you can read logs that you care about. For example, to get the last 100 l
 `console.log('errors:'); state.logs.filter(log => log.type === 'error').slice(-100).forEach(x => console.log(x))`
 
 then to reset logs: `state.logs = []` and to stop listening: `page.removeAllListeners('console')`
+
+## using getLatestLogs to read browser console logs
+
+The system automatically captures and stores up to 5000 browser console logs per page. Logs are automatically cleared when a page reloads or navigates to a new URL. You can retrieve logs using the `getLatestLogs` function:
+
+```js
+// Get all browser console logs from all pages (up to 5000 per page)
+const allLogs = await getLatestLogs()
+console.log(allLogs)
+
+// Get last 50 browser error logs
+const errorLogs = await getLatestLogs({ count: 50, searchFilter: /\[error\]/ })
+console.log(errorLogs)
+
+// Get all browser logs from the current page only
+const pageLogs = await getLatestLogs({ page })
+console.log(pageLogs)
+
+// Find browser logs containing specific text
+const authLogs = await getLatestLogs({ searchFilter: 'authentication failed' })
+console.log(authLogs)
+
+// Example output format:
+// [log] User clicked login button
+// [error] Failed to fetch /api/auth
+// [warn] Session expiring soon
+```
 
 ## loading file content into inputs
 
