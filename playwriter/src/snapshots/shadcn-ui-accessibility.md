@@ -28,10 +28,10 @@ Return value:
             - generic [ref=e21]:
               - generic: ⌘
               - generic: K
-          - link "100.5k" [ref=e22] [cursor=pointer]:
+          - link "100.6k" [ref=e22] [cursor=pointer]:
             - /url: https://github.com/shadcn-ui/ui
             - img
-            - generic [ref=e23]: 100.5k
+            - generic [ref=e23]: 100.6k
           - button "Toggle theme" [ref=e24]:
             - img
             - generic [ref=e25]: Toggle theme
