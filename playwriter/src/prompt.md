@@ -46,7 +46,7 @@ state.localhostPage = pages[0];
 await state.localhostPage.bringToFront();
 ```
 
-IMPORTANT! never call bringToFront unless specifically asked by the user. It is very bothering to the user otherwise!
+IMPORTANT! never call bringToFront unless specifically asked by the user. It is very bothering to the user otherwise! you don't need to call bringToFront before being able to interact. you can very well interact without calling it first. on any page in the background you have access to.
 
 ## rules
 
