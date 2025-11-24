@@ -79,6 +79,10 @@ const MAX_LOGS_PER_PAGE = 5000
 const RELAY_PORT = 19988
 const NO_TABS_ERROR = `No browser tabs are connected. Please install and enable the Playwriter extension on at least one tab: https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe`
 
+function isRegExp(value: any): value is RegExp {
+  return typeof value === 'object' && value !== null && typeof value.test === 'function' && typeof value.exec === 'function'
+}
+
 function clearUserState() {
   Object.keys(userState).forEach((key) => delete userState[key])
 }
@@ -380,7 +384,7 @@ server.tool(
           for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
             let isMatch = false
-            if (searchString instanceof RegExp) {
+            if (isRegExp(searchString)) {
               isMatch = searchString.test(line)
             } else {
               isMatch = line.includes(searchString)
@@ -453,7 +457,7 @@ server.tool(
           allLogs = allLogs.filter((log) => {
             if (typeof searchFilter === 'string') {
               return log.includes(searchFilter)
-            } else if (searchFilter instanceof RegExp) {
+            } else if (isRegExp(searchFilter)) {
               return searchFilter.test(log)
             }
             return false
