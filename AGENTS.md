@@ -63,6 +63,12 @@ when you do an important change, update relevant CHANGELOG.md files for each pac
 
 also bump package.json versions and IMPORTANT also the extension/manifest.json version too
 
+## debugging playwriter mcp issues
+
+sometimes the user will ask you to debug an mcp issue. to do this you may want to add logs to the mcp and server. to do this you will also need to restart the server so we use the latest code. restarting the mcp yourself is not possible. instead you will need to ask the user to do it or write a test case, where the mcp can be reloaded. also making changes in the extension will not work. you will have to write a test case for that to work. you can ask the user to reconnect these too. for reloading the extension you can run the `pnpm build` script and do `osascript -e 'tell application "Google Chrome" to open location "chrome://extensions/?id=elnnakgjclnapgflmidlpobefkdmapdm"'` to make it easier for the user to reload it
+
+if the problem was in the ws server you can restart that yourself killing process listening on 19988 and sending a new mcp call.
+
 # core guidelines
 
 when summarizing changes at the end of the message, be super short, a few words and in bullet points, use bold text to highlight important keywords. use markdown.
@@ -89,6 +95,10 @@ use `git ls-files | tree --fromfile` to see files in the repo. this command will
 if you find code that was not there since the last time you read the file it means the user or another agent edited the file. do not revert the changes that were added. instead keep them and integrate them with your new changes
 
 IMPORTANT: NEVER commit your changes unless clearly and specifically asked to!
+
+## opening me files in zed to show me a specific portion of code
+
+you can open files when i ask me "open in zed the line where ..." using the command `zed path/to/file:line`
 
 # typescript
 
