@@ -52,7 +52,7 @@ function findChromeExecutablePath(): string {
   })()
 
   for (const path of paths) {
-    const resolvedPath = path.startsWith('~') ? path.replace('~', process.env.HOME || '') : path
+    const resolvedPath = path.startsWith('~') ? path.replace('~', os.homedir()) : path
     if (fs.existsSync(resolvedPath)) {
       return resolvedPath
     }
