@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.14
+
+### Patch Changes
+
+- **Added Stagehand support**: CDP relay now works with Stagehand's `cdpUrl` connection option
+  - Added `Target.setDiscoverTargets` handler that sends `Target.targetCreated` events for connected targets
+  - Added `Target.attachToTarget` handler that returns existing sessionId for already-attached targets
+  - Added Stagehand integration test verifying connection and page access
+- **Viewport initialization**: Extension now sets initial viewport via `Emulation.setDeviceMetricsOverride` when attaching to tabs
+  - Gets layout metrics via `Page.getLayoutMetrics`
+  - Sends `Page.frameResized` event after setting viewport
+
 ## 0.0.13
 
 ### Patch Changes
