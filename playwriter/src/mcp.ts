@@ -88,6 +88,9 @@ const MAX_LOGS_PER_PAGE = 5000
 // Store last accessibility snapshot per page for diff feature
 const lastSnapshots: WeakMap<Page, string> = new WeakMap()
 
+// Cache CDP sessions per page
+const cdpSessionCache: WeakMap<Page, CDPSession> = new WeakMap()
+
 const RELAY_PORT = 19988
 const LOG_FILE_PATH = process.env.PLAYWRITER_LOG_PATH || path.join(os.tmpdir(), 'playwriter-relay-server.log')
 const NO_TABS_ERROR = `No browser tabs are connected. Please install and enable the Playwriter extension on at least one tab: https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe`
@@ -536,8 +539,14 @@ server.tool(
       }
 
       const getCDPSession = async (options: { page: Page }) => {
+        const cached = cdpSessionCache.get(options.page)
+        if (cached) {
+          return cached
+        }
         const wsUrl = getCdpUrl({ port: RELAY_PORT })
-        return getCDPSessionForPage({ page: options.page, wsUrl })
+        const session = await getCDPSessionForPage({ page: options.page, wsUrl })
+        cdpSessionCache.set(options.page, session)
+        return session
       }
 
       let vmContextObj: VMContextWithGlobals = {

@@ -89,12 +89,18 @@ you have access to some functions in addition to playwright methods:
     - `minWait`: (optional) minimum wait before checking in ms (default: 500)
     - Returns: `{ success, readyState, pendingRequests, waitTimeMs, timedOut }`
     - Filters out: ad networks (doubleclick, googlesyndication), analytics (google-analytics, mixpanel, segment), social (facebook.net, twitter), support widgets (intercom, zendesk), and slow fonts/images
-- `getCDPSession({ page })`: creates a CDP session to send raw Chrome DevTools Protocol commands. Use this instead of `page.context().newCDPSession()` which does not work through the playwriter relay.
+- `getCDPSession({ page })`: creates a CDP session to send raw Chrome DevTools Protocol commands. Use this instead of `page.context().newCDPSession()` which does not work through the playwriter relay. Sessions are cached per page.
     - `page`: the page object to create the session for
-    - Returns: `{ send(method, params?), on(event, callback), off(event, callback), detach() }`
-    - Example: `const cdp = await getCDPSession({ page }); const metrics = await cdp.send('Page.getLayoutMetrics'); cdp.detach();`
-
-To bring a tab to front and focus it, use the standard Playwright method `await page.bringToFront()`
+    - Returns: `{ send(method, params?), on(event, callback), off(event, callback) }`
+    - Example: `const cdp = await getCDPSession({ page }); const metrics = await cdp.send('Page.getLayoutMetrics');`
+    - Example listening for events:
+      ```js
+      const cdp = await getCDPSession({ page });
+      await cdp.send('Debugger.enable');
+      const pausedEvent = await new Promise((resolve) => { cdp.on('Debugger.paused', resolve); });
+      console.log('Paused at:', pausedEvent.callFrames[0].location);
+      await cdp.send('Debugger.resume');
+      ```
 
 example:
 
