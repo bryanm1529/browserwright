@@ -280,8 +280,18 @@ function onDebuggerEvent(source: chrome.debugger.DebuggerSession, method: string
   }
 
   if (method === 'Target.detachedFromTarget' && params?.sessionId) {
-    logger.debug('Child target detached:', params.sessionId)
-    childSessions.delete(params.sessionId)
+    const mainTab = getTabBySessionId(params.sessionId)
+    if (mainTab) {
+      logger.debug('Main tab detached via CDP event:', mainTab.tabId, 'sessionId:', params.sessionId)
+      store.setState((state) => {
+        const newTabs = new Map(state.tabs)
+        newTabs.delete(mainTab.tabId)
+        return { tabs: newTabs }
+      })
+    } else {
+      logger.debug('Child target detached:', params.sessionId)
+      childSessions.delete(params.sessionId)
+    }
   }
 
   sendMessage({
@@ -339,6 +349,8 @@ async function attachTab(tabId: number): Promise<Protocol.Target.TargetInfo> {
   logger.debug('Attaching debugger to tab:', tabId)
   await chrome.debugger.attach(debuggee, '1.3')
   logger.debug('Debugger attached successfully to tab:', tabId)
+
+  await new Promise((resolve) => setTimeout(resolve, 400))
 
   const result = (await chrome.debugger.sendCommand(
     debuggee,

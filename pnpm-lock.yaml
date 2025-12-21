@@ -90,6 +90,9 @@ importers:
       string-dedent:
         specifier: ^3.0.2
         version: 3.0.2
+      strip-ansi:
+        specifier: ^7.1.2
+        version: 7.1.2
       user-agents:
         specifier: ^1.1.669
         version: 1.1.669

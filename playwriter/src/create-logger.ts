@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
+import stripAnsi from 'strip-ansi'
 import { LOG_FILE_PATH } from './utils.js'
 
 export type Logger = {
@@ -23,7 +24,7 @@ export function createFileLogger({ logFilePath }: { logFilePath?: string } = {})
     const message = args.map(arg =>
       typeof arg === 'string' ? arg : util.inspect(arg, { depth: null, colors: false })
     ).join(' ')
-    queue = queue.then(() => fs.promises.appendFile(resolvedLogFilePath, message + '\n'))
+    queue = queue.then(() => fs.promises.appendFile(resolvedLogFilePath, stripAnsi(message) + '\n'))
     return queue
   }
 

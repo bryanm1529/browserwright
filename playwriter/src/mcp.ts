@@ -111,12 +111,12 @@ async function setDeviceScaleFactorForMacOS(context: BrowserContext): Promise<vo
     return
   }
   options.deviceScaleFactor = 2
-  for (const page of context.pages()) {
-    const delegate = (page as any)._delegate
-    if (delegate?.updateEmulatedViewportSize) {
-      await delegate.updateEmulatedViewportSize().catch(() => {})
-    }
-  }
+  // for (const page of context.pages()) {
+  //   const delegate = (page as any)._delegate
+  //   if (delegate?.updateEmulatedViewportSize) {
+  //     await delegate.updateEmulatedViewportSize().catch(() => {})
+  //   }
+  // }
 }
 
 async function preserveSystemColorScheme(context: BrowserContext): Promise<void> {
@@ -127,11 +127,11 @@ async function preserveSystemColorScheme(context: BrowserContext): Promise<void>
   options.colorScheme = 'no-override'
   options.reducedMotion = 'no-override'
   options.forcedColors = 'no-override'
-  await Promise.all(
-    context.pages().map((page) => {
-      return page.emulateMedia({ colorScheme: null, reducedMotion: null, forcedColors: null }).catch(() => {})
-    }),
-  )
+  // await Promise.all(
+  //   context.pages().map((page) => {
+  //     return page.emulateMedia({ colorScheme: null, reducedMotion: null, forcedColors: null }).catch(() => {})
+  //   }),
+  // )
 }
 
 function isRegExp(value: any): value is RegExp {
