@@ -54,6 +54,8 @@ export class Debugger {
   private currentCallFrames: Protocol.Debugger.CallFrame[] = []
   private breakpoints = new Map<string, BreakpointInfo>()
   private scripts = new Map<string, ScriptInfo>()
+  private xhrBreakpoints = new Set<string>()
+  private blackboxPatterns: string[] = []
 
   /**
    * Creates a new Debugger instance.
@@ -119,6 +121,7 @@ export class Debugger {
    * @param options - Breakpoint options
    * @param options.file - Script URL (e.g. https://example.com/app.js)
    * @param options.line - Line number (1-based)
+   * @param options.condition - Optional JS expression; only pause when it evaluates to true
    * @returns The breakpoint ID for later removal
    *
    * @example
@@ -126,15 +129,23 @@ export class Debugger {
    * const id = await dbg.setBreakpoint({ file: 'https://example.com/app.js', line: 42 })
    * // later:
    * await dbg.deleteBreakpoint({ breakpointId: id })
+   *
+   * // Conditional breakpoint - only pause when userId is 123
+   * await dbg.setBreakpoint({
+   *   file: 'https://example.com/app.js',
+   *   line: 42,
+   *   condition: 'userId === 123'
+   * })
    * ```
    */
-  async setBreakpoint({ file, line }: { file: string; line: number }): Promise<string> {
+  async setBreakpoint({ file, line, condition }: { file: string; line: number; condition?: string }): Promise<string> {
     await this.enable()
 
     const response = await this.cdp.send('Debugger.setBreakpointByUrl', {
       lineNumber: line - 1,
       urlRegex: file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
       columnNumber: 0,
+      condition,
     })
 
     this.breakpoints.set(response.breakpointId, { id: response.breakpointId, file, line })
@@ -506,6 +517,97 @@ export class Debugger {
       ? scripts.filter((s) => s.url.toLowerCase().includes(search.toLowerCase()))
       : scripts
     return filtered.slice(0, 20)
+  }
+
+  async setXHRBreakpoint({ url }: { url: string }): Promise<void> {
+    await this.enable()
+    await this.cdp.send('DOMDebugger.setXHRBreakpoint', { url })
+    this.xhrBreakpoints.add(url)
+  }
+
+  async removeXHRBreakpoint({ url }: { url: string }): Promise<void> {
+    await this.enable()
+    await this.cdp.send('DOMDebugger.removeXHRBreakpoint', { url })
+    this.xhrBreakpoints.delete(url)
+  }
+
+  listXHRBreakpoints(): string[] {
+    return Array.from(this.xhrBreakpoints)
+  }
+
+  /**
+   * Sets regex patterns for scripts to blackbox (skip when stepping).
+   * Blackboxed scripts are hidden from the call stack and stepped over automatically.
+   * Useful for ignoring framework/library code during debugging.
+   *
+   * @param options - Options
+   * @param options.patterns - Array of regex patterns to match script URLs
+   *
+   * @example
+   * ```ts
+   * // Skip all node_modules
+   * await dbg.setBlackboxPatterns({ patterns: ['node_modules'] })
+   *
+   * // Skip React and other frameworks
+   * await dbg.setBlackboxPatterns({
+   *   patterns: [
+   *     'node_modules/react',
+   *     'node_modules/react-dom',
+   *     'node_modules/next',
+   *     'webpack://',
+   *   ]
+   * })
+   *
+   * // Skip all third-party scripts
+   * await dbg.setBlackboxPatterns({ patterns: ['^https://cdn\\.'] })
+   *
+   * // Clear all blackbox patterns
+   * await dbg.setBlackboxPatterns({ patterns: [] })
+   * ```
+   */
+  async setBlackboxPatterns({ patterns }: { patterns: string[] }): Promise<void> {
+    await this.enable()
+    this.blackboxPatterns = patterns
+    await this.cdp.send('Debugger.setBlackboxPatterns', { patterns })
+  }
+
+  /**
+   * Adds a single regex pattern to the blackbox list.
+   *
+   * @param options - Options
+   * @param options.pattern - Regex pattern to match script URLs
+   *
+   * @example
+   * ```ts
+   * await dbg.addBlackboxPattern({ pattern: 'node_modules/lodash' })
+   * await dbg.addBlackboxPattern({ pattern: 'node_modules/axios' })
+   * ```
+   */
+  async addBlackboxPattern({ pattern }: { pattern: string }): Promise<void> {
+    await this.enable()
+    if (!this.blackboxPatterns.includes(pattern)) {
+      this.blackboxPatterns.push(pattern)
+      await this.cdp.send('Debugger.setBlackboxPatterns', { patterns: this.blackboxPatterns })
+    }
+  }
+
+  /**
+   * Removes a pattern from the blackbox list.
+   *
+   * @param options - Options
+   * @param options.pattern - The exact pattern string to remove
+   */
+  async removeBlackboxPattern({ pattern }: { pattern: string }): Promise<void> {
+    await this.enable()
+    this.blackboxPatterns = this.blackboxPatterns.filter((p) => p !== pattern)
+    await this.cdp.send('Debugger.setBlackboxPatterns', { patterns: this.blackboxPatterns })
+  }
+
+  /**
+   * Returns the current list of blackbox patterns.
+   */
+  listBlackboxPatterns(): string[] {
+    return [...this.blackboxPatterns]
   }
 
   private truncateValue(value: unknown): unknown {

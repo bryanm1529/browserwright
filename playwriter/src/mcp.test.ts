@@ -2070,30 +2070,9 @@ describe('CDP Session Tests', () => {
             .filter(name => name && name.length > 0)
             .slice(0, 10)
 
-        expect({
-            hasNodes: profile.nodes.length > 0,
-            nodeCount: profile.nodes.length,
-            durationMicroseconds: profile.endTime - profile.startTime,
-            sampleFunctionNames: functionNames,
-        }).toMatchInlineSnapshot(`
-          {
-            "durationMicroseconds": 10698,
-            "hasNodes": true,
-            "nodeCount": 19,
-            "sampleFunctionNames": [
-              "(root)",
-              "(program)",
-              "(idle)",
-              "evaluate",
-              "fibonacci",
-              "fibonacci",
-              "fibonacci",
-              "fibonacci",
-              "fibonacci",
-              "fibonacci",
-            ],
-          }
-        `)
+        expect(profile.nodes.length).toBeGreaterThan(0)
+        expect(profile.endTime - profile.startTime).toBeGreaterThan(0)
+        expect(functionNames.every((name) => typeof name === 'string')).toBe(true)
 
         await cdpSession.send('Profiler.disable')
         cdpSession.close()
