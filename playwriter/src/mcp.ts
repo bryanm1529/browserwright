@@ -20,6 +20,7 @@ import { Debugger } from './debugger.js'
 import { Editor } from './editor.js'
 import { getStylesForLocator, formatStylesAsText, type StylesResult } from './styles.js'
 import { getReactSource, type ReactSourceLocation } from './react-source.js'
+import { ScopedFS } from './scoped-fs.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -113,6 +114,102 @@ const cdpSessionCache: WeakMap<Page, CDPSession> = new WeakMap()
 
 const RELAY_PORT = Number(process.env.PLAYWRITER_PORT) || 19988
 const NO_TABS_ERROR = `No browser tabs are connected. Please install and enable the Playwriter extension on at least one tab: https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe`
+
+// Create a scoped fs instance that allows access to cwd, /tmp, and os.tmpdir()
+const scopedFs = new ScopedFS()
+
+/**
+ * Allowlist of Node.js built-in modules that are safe to use in the sandbox.
+ * Dangerous modules like child_process, cluster, worker_threads, vm, net are blocked.
+ */
+const ALLOWED_MODULES = new Set([
+  // Safe utility modules
+  'path',
+  'node:path',
+  'url',
+  'node:url',
+  'querystring',
+  'node:querystring',
+  'punycode',
+  'node:punycode',
+
+  // Crypto and encoding
+  'crypto',
+  'node:crypto',
+  'buffer',
+  'node:buffer',
+  'string_decoder',
+  'node:string_decoder',
+
+  // Utilities
+  'util',
+  'node:util',
+  'assert',
+  'node:assert',
+  'events',
+  'node:events',
+  'timers',
+  'node:timers',
+
+  // Streams and compression
+  'stream',
+  'node:stream',
+  'zlib',
+  'node:zlib',
+
+  // HTTP (fetch is already available, these are consistent)
+  'http',
+  'node:http',
+  'https',
+  'node:https',
+  'http2',
+  'node:http2',
+
+  // System info (read-only, useful for debugging)
+  'os',
+  'node:os',
+
+  // fs is allowed but returns sandboxed version
+  'fs',
+  'node:fs',
+])
+
+/**
+ * Create a sandboxed require function that:
+ * 1. Returns scoped fs for 'fs' and 'node:fs'
+ * 2. Only allows modules in the ALLOWED_MODULES allowlist
+ * 3. Blocks all other modules (child_process, net, vm, third-party packages, etc.)
+ */
+function createSandboxedRequire(originalRequire: NodeRequire): NodeRequire {
+  const sandboxedRequire = ((id: string) => {
+    // Check allowlist first
+    if (!ALLOWED_MODULES.has(id)) {
+      const error = new Error(
+        `Module "${id}" is not allowed in the sandbox. ` +
+          `Only safe Node.js built-ins are permitted: ${[...ALLOWED_MODULES].filter((m) => !m.startsWith('node:')).join(', ')}`,
+      )
+      error.name = 'ModuleNotAllowedError'
+      throw error
+    }
+
+    // Return sandboxed fs
+    if (id === 'fs' || id === 'node:fs') {
+      return scopedFs
+    }
+
+    return originalRequire(id)
+  }) as NodeRequire
+
+  // Copy over require properties
+  sandboxedRequire.resolve = originalRequire.resolve
+  sandboxedRequire.cache = originalRequire.cache
+  sandboxedRequire.extensions = originalRequire.extensions
+  sandboxedRequire.main = originalRequire.main
+
+  return sandboxedRequire
+}
+
+const sandboxedRequire = createSandboxedRequire(require)
 
 interface RemoteConfig {
   host: string
@@ -304,6 +401,12 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
   const cdpEndpoint = getCdpUrl(remote || { port: RELAY_PORT })
   const browser = await chromium.connectOverCDP(cdpEndpoint)
 
+  // Clear connection state when browser disconnects (e.g., extension reconnects, relay server restarts)
+  browser.on('disconnected', () => {
+    mcpLog('Browser disconnected, clearing connection state')
+    clearConnectionState()
+  })
+
   const contexts = browser.contexts()
   const context = contexts.length > 0 ? contexts[0] : await browser.newContext()
 
@@ -436,6 +539,12 @@ async function resetConnection(): Promise<{ browser: Browser; page: Page; contex
 
   const cdpEndpoint = getCdpUrl(remote || { port: RELAY_PORT })
   const browser = await chromium.connectOverCDP(cdpEndpoint)
+
+  // Clear connection state when browser disconnects (e.g., extension reconnects, relay server restarts)
+  browser.on('disconnected', () => {
+    mcpLog('Browser disconnected, clearing connection state')
+    clearConnectionState()
+  })
 
   const contexts = browser.contexts()
   const context = contexts.length > 0 ? contexts[0] : await browser.newContext()
@@ -788,7 +897,7 @@ server.tool(
             formatStylesAsText,
             getReactSource: getReactSourceFn,
             resetPlaywright: vmContextObj.resetPlaywright,
-            require,
+            require: sandboxedRequire,
             // TODO --experimental-vm-modules is needed to make import work in vm
             import: vmContextObj.import,
             ...usefulGlobals,
@@ -797,7 +906,7 @@ server.tool(
           Object.assign(vmContextObj, resetObj)
           return { page: newPage, context: newContext }
         },
-        require,
+        require: sandboxedRequire,
         import: (specifier: string) => import(specifier),
         ...usefulGlobals,
       }

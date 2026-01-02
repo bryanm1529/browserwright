@@ -824,6 +824,83 @@ describe('MCP Server Tests', () => {
         await page.goto('about:blank')
     })
 
+    it('should auto-reconnect MCP after extension WebSocket reconnects', async () => {
+        // This test verifies that the MCP automatically reconnects when the browser
+        // disconnects (e.g., when the extension WebSocket reconnects and the relay
+        // server closes all playwright clients). The fix adds browser.on('disconnected')
+        // handler that clears state.isConnected, so ensureConnection() creates a new connection.
+
+        const serviceWorker = await getExtensionServiceWorker(testCtx!.browserContext)
+
+        // 1. Create a test page and enable extension
+        const page = await testCtx!.browserContext.newPage()
+        await page.goto('https://example.com/auto-reconnect-test')
+        await page.waitForLoadState('domcontentloaded')
+        await page.bringToFront()
+
+        const initialEnable = await serviceWorker.evaluate(async () => {
+            return await globalThis.toggleExtensionForActiveTab()
+        })
+        expect(initialEnable.isConnected).toBe(true)
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // 2. Verify MCP can execute commands
+        const beforeResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const pages = context.pages();
+          const testPage = pages.find(p => p.url().includes('auto-reconnect-test'));
+          return { pagesCount: pages.length, foundTestPage: !!testPage };
+        `,
+            },
+        })
+        const beforeOutput = (beforeResult as any).content[0].text
+        expect(beforeOutput).toContain('foundTestPage')
+        expect(beforeOutput).toContain('true')
+
+        // 3. Simulate extension WebSocket reconnection
+        // This causes relay server to close all playwright client WebSockets
+        await serviceWorker.evaluate(async () => {
+            await globalThis.disconnectEverything()
+        })
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // Re-enable extension (simulates extension reconnecting)
+        await page.bringToFront()
+        const reconnectResult = await serviceWorker.evaluate(async () => {
+            return await globalThis.toggleExtensionForActiveTab()
+        })
+        expect(reconnectResult.isConnected).toBe(true)
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // 4. Execute command WITHOUT calling resetPlaywright()
+        // The browser.on('disconnected') handler should have cleared state.isConnected,
+        // causing ensureConnection() to automatically create a new connection
+        const afterResult = await client.callTool({
+            name: 'execute',
+            arguments: {
+                code: js`
+          const pages = context.pages();
+          const testPage = pages.find(p => p.url().includes('auto-reconnect-test'));
+          return { pagesCount: pages.length, foundTestPage: !!testPage, url: testPage?.url() };
+        `,
+            },
+        })
+
+        const afterOutput = (afterResult as any).content[0].text
+        // The command should succeed and find our test page
+        expect(afterOutput).toContain('foundTestPage')
+        expect(afterOutput).toContain('true')
+        expect(afterOutput).toContain('auto-reconnect-test')
+        // Should NOT contain error about extension not connected
+        expect(afterOutput).not.toContain('Extension not connected')
+        expect((afterResult as any).isError).not.toBe(true)
+
+        // Clean up
+        await page.goto('about:blank')
+    })
+
     it('should capture browser console logs with getLatestLogs', async () => {
         // Ensure clean state and clear any existing logs
         const resetResult = await client.callTool({
@@ -1260,10 +1337,14 @@ describe('MCP Server Tests', () => {
         await page.close()
     }, 30000)
 
-    it('should be usable after toggle with waitForEvent', async () => {
-        // This test demonstrates the proper way to wait for a page after toggle.
-        // Instead of arbitrary sleep(), use context.waitForEvent('page').
-        // See page-ready-investigation.md for details on why this is needed.
+    it('should be usable after toggle with valid URL', async () => {
+        // This test validates the extension properly waits for valid URLs before
+        // sending Target.attachedToTarget. Uses Discord - a heavy React SPA.
+        //
+        // We use waitForEvent('page') to wait for Playwright to process the event.
+        // The KEY assertion is that when the event fires, the URL is VALID (not empty).
+        // Before the fix: event fired with empty URL -> page broken forever
+        // After the fix: event fires with valid URL -> page works immediately
 
         const _browserContext = getBrowserContext()
         const serviceWorker = await getExtensionServiceWorker(_browserContext)
@@ -1271,33 +1352,76 @@ describe('MCP Server Tests', () => {
         const context = browser.contexts()[0]
 
         const page = await _browserContext.newPage()
-        await page.goto('https://example.com', { waitUntil: 'domcontentloaded' })
+        await page.goto('https://discord.com/login')
         await page.bringToFront()
 
-        // Set up page listener BEFORE toggle - this is the key pattern
-        const pagePromise = context.waitForEvent('page', {
-            predicate: p => p.url().includes('example.com'),
-            timeout: 5000
-        })
+        // Set up listener BEFORE toggle
+        const pagePromise = context.waitForEvent('page', { timeout: 10000 })
 
-        // Toggle extension - no sleep needed after!
+        // Toggle extension - extension waits for valid URL before sending event
         await serviceWorker.evaluate(async () => {
             await globalThis.toggleExtensionForActiveTab()
         })
 
-        // Wait for page event - this resolves when Playwright has fully processed the page
+        // Wait for page event
         const targetPage = await pagePromise
+        console.log('Page URL when event fired:', targetPage.url())
 
-        // Page is now guaranteed to be ready
-        expect(targetPage.url()).toContain('example.com')
+        // KEY ASSERTION: URL must NOT be empty - this is what the extension fix guarantees
+        expect(targetPage.url()).not.toBe('')
+        expect(targetPage.url()).not.toBe(':')
+        expect(targetPage.url()).toContain('discord.com')
 
-        // evaluate() works immediately
+        // evaluate() works immediately - no waiting needed
         const result = await targetPage.evaluate(() => window.location.href)
-        expect(result).toContain('example.com')
+        expect(result).toContain('discord.com')
 
         await browser.close()
         await page.close()
-    }, 30000)
+    }, 60000)
+
+    it('should have non-empty URLs when connecting to already-loaded pages', async () => {
+        // This test validates that when we connect to a browser with already-loaded pages,
+        // all pages have non-empty URLs. Empty URLs break Playwright permanently.
+
+        const _browserContext = getBrowserContext()
+        const serviceWorker = await getExtensionServiceWorker(_browserContext)
+
+        // Create and fully load a heavy page BEFORE connecting
+        const page = await _browserContext.newPage()
+        await page.goto('https://discord.com/login', { waitUntil: 'load' })
+        await page.bringToFront()
+
+        // Toggle extension to attach to the loaded page
+        await serviceWorker.evaluate(async () => {
+            await globalThis.toggleExtensionForActiveTab()
+        })
+
+        // NOW connect via CDP - page should already be attached
+        const browser = await chromium.connectOverCDP(getCdpUrl({ port: TEST_PORT }))
+        const context = browser.contexts()[0]
+
+        // Get all pages and verify NONE have empty URLs
+        const pages = context.pages()
+        console.log('All page URLs:', pages.map(p => p.url()))
+
+        expect(pages.length).toBeGreaterThan(0)
+        for (const p of pages) {
+            expect(p.url()).not.toBe('')
+            expect(p.url()).not.toBe(':')
+            expect(p.url()).not.toBeUndefined()
+        }
+
+        // Find Discord page and verify it works
+        const discordPage = pages.find(p => p.url().includes('discord.com'))
+        expect(discordPage).toBeDefined()
+
+        const result = await discordPage!.evaluate(() => window.location.href)
+        expect(result).toContain('discord.com')
+
+        await browser.close()
+        await page.close()
+    }, 60000)
 
     it('should maintain correct page.url() with iframe-heavy pages', async () => {
         const browserContext = getBrowserContext()
@@ -1992,6 +2116,8 @@ describe('MCP Server Tests', () => {
 
         await page.close()
     }, 60000)
+
+
 
 })
 
