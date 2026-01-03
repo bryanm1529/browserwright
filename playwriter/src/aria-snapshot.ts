@@ -256,6 +256,13 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       const doc = (globalThis as any).document
       const win = globalThis as any
 
+      // Cancel any pending auto-hide timer from previous call
+      const timerKey = '__playwriter_labels_timer__'
+      if (win[timerKey]) {
+        win.clearTimeout(win[timerKey])
+        win[timerKey] = null
+      }
+
       // Remove existing labels if present (idempotent)
       doc.getElementById(containerId)?.remove()
 
@@ -398,8 +405,10 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       doc.documentElement.appendChild(container)
 
       // Auto-hide labels after 5 seconds to prevent stale labels
-      win.setTimeout(() => {
+      // Store timer ID so it can be cancelled if showAriaRefLabels is called again
+      win[timerKey] = win.setTimeout(() => {
         doc.getElementById(containerId)?.remove()
+        win[timerKey] = null
       }, 5000)
 
       return count
@@ -423,6 +432,15 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
 export async function hideAriaRefLabels({ page }: { page: Page }): Promise<void> {
   await page.evaluate((id) => {
     const doc = (globalThis as any).document
+    const win = globalThis as any
+
+    // Cancel any pending auto-hide timer
+    const timerKey = '__playwriter_labels_timer__'
+    if (win[timerKey]) {
+      win.clearTimeout(win[timerKey])
+      win[timerKey] = null
+    }
+
     doc.getElementById(id)?.remove()
   }, LABELS_CONTAINER_ID)
 }
