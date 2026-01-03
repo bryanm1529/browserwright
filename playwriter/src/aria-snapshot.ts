@@ -197,7 +197,7 @@ export async function getAriaSnapshot({ page }: { page: Page }): Promise<AriaSna
  * Labels are yellow badges positioned above each element showing the aria ref (e.g., "e1", "e2").
  * Use with screenshots so agents can see which elements are interactive.
  *
- * Labels auto-hide after 5 seconds to prevent stale labels remaining on the page.
+ * Labels auto-hide after 30 seconds to prevent stale labels remaining on the page.
  * Call this function again if the page HTML changes to get fresh labels.
  *
  * By default, only shows labels for truly interactive roles (button, link, textbox, etc.)
@@ -209,7 +209,7 @@ export async function getAriaSnapshot({ page }: { page: Page }): Promise<AriaSna
  * await page.screenshot({ path: '/tmp/screenshot.png' })
  * // Agent sees [e5] label on "Submit" button
  * await page.locator('aria-ref=e5').click()
- * // Labels auto-hide after 5 seconds, or call hideAriaRefLabels() manually
+ * // Labels auto-hide after 30 seconds, or call hideAriaRefLabels() manually
  * ```
  */
 export async function showAriaRefLabels({ page, interactiveOnly = true }: {
@@ -238,10 +238,9 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
 
   // Single evaluate call: create container, styles, and all labels
   // ElementHandles get unwrapped to DOM elements in browser context
-  // Using 'any' types here since this code runs in browser context
   const labelCount = await page.evaluate(
     // Using 'any' for browser types since this runs in browser context
-    ({ refs, containerId, containerStyles, labelStyles, roleColors, defaultColors }: {
+    function ({ refs, containerId, containerStyles, labelStyles, roleColors, defaultColors }: {
       refs: Array<{
         ref: string
         role: string
@@ -252,7 +251,9 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       labelStyles: string
       roleColors: Record<string, [string, string, string]>
       defaultColors: [string, string, string]
-    }) => {
+    }) {
+      // Polyfill esbuild's __name helper which gets injected by vite-node but doesn't exist in browser
+      ;(globalThis as any).__name ||= (fn: any) => fn
       const doc = (globalThis as any).document
       const win = globalThis as any
 
@@ -285,8 +286,10 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       const LABEL_CHAR_WIDTH = 7 // approximate width per character
 
       // Parse alpha from rgb/rgba color string (getComputedStyle always returns these formats)
-      const getColorAlpha = (color: string): number => {
-        if (color === 'transparent') return 0
+      function getColorAlpha(color: string): number {
+        if (color === 'transparent') {
+          return 0
+        }
         // Match rgba(r, g, b, a) or rgb(r, g, b)
         const match = color.match(/rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(?:,\s*([\d.]+)\s*)?\)/)
         if (match) {
@@ -296,25 +299,31 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       }
 
       // Check if an element has an opaque background that would block elements behind it
-      const isOpaqueElement = (el: any): boolean => {
+      function isOpaqueElement(el: any): boolean {
         const style = win.getComputedStyle(el)
 
         // Check element opacity
         const opacity = parseFloat(style.opacity)
-        if (opacity < 0.1) return false
+        if (opacity < 0.1) {
+          return false
+        }
 
         // Check background-color alpha
         const bgAlpha = getColorAlpha(style.backgroundColor)
-        if (bgAlpha > 0.1) return true
+        if (bgAlpha > 0.1) {
+          return true
+        }
 
         // Check if has background-image (usually opaque)
-        if (style.backgroundImage !== 'none') return true
+        if (style.backgroundImage !== 'none') {
+          return true
+        }
 
         return false
       }
 
       // Check if element is visible (not covered by opaque overlay)
-      const isElementVisible = (element: any, rect: any): boolean => {
+      function isElementVisible(element: any, rect: any): boolean {
         const centerX = rect.left + rect.width / 2
         const centerY = rect.top + rect.height / 2
 
@@ -322,32 +331,44 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
         const stack = doc.elementsFromPoint(centerX, centerY) as any[]
 
         // Find our target element in the stack
-        const targetIndex = stack.findIndex((el: any) =>
-          element.contains(el) || el.contains(element)
-        )
+        let targetIndex = -1
+        for (let i = 0; i < stack.length; i++) {
+          if (element.contains(stack[i]) || stack[i].contains(element)) {
+            targetIndex = i
+            break
+          }
+        }
 
         // Element not in stack at all - not visible
-        if (targetIndex === -1) return false
+        if (targetIndex === -1) {
+          return false
+        }
 
         // Check if any opaque element is above our target
         for (let i = 0; i < targetIndex; i++) {
           const el = stack[i]
           // Skip our own overlay container
-          if (el.id === containerId) continue
+          if (el.id === containerId) {
+            continue
+          }
           // Skip pointer-events: none elements (decorative overlays)
-          if (win.getComputedStyle(el).pointerEvents === 'none') continue
+          if (win.getComputedStyle(el).pointerEvents === 'none') {
+            continue
+          }
           // If this element is opaque, our target is blocked
-          if (isOpaqueElement(el)) return false
+          if (isOpaqueElement(el)) {
+            return false
+          }
         }
 
         return true
       }
 
       // Check if two rectangles overlap
-      const rectsOverlap = (
+      function rectsOverlap(
         a: { left: number; top: number; right: number; bottom: number },
         b: { left: number; top: number; right: number; bottom: number }
-      ) => {
+      ) {
         return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
       }
 
@@ -378,7 +399,13 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
         }
 
         // Skip if this label would overlap with any already-placed label
-        const overlaps = placedLabels.some((placed) => rectsOverlap(labelRect, placed))
+        let overlaps = false
+        for (const placed of placedLabels) {
+          if (rectsOverlap(labelRect, placed)) {
+            overlaps = true
+            break
+          }
+        }
         if (overlaps) {
           continue
         }
@@ -404,12 +431,12 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
 
       doc.documentElement.appendChild(container)
 
-      // Auto-hide labels after 5 seconds to prevent stale labels
+      // Auto-hide labels after 30 seconds to prevent stale labels
       // Store timer ID so it can be cancelled if showAriaRefLabels is called again
-      win[timerKey] = win.setTimeout(() => {
+      win[timerKey] = win.setTimeout(function() {
         doc.getElementById(containerId)?.remove()
         win[timerKey] = null
-      }, 5000)
+      }, 30000)
 
       return count
     },

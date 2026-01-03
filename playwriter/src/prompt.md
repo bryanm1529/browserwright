@@ -206,7 +206,7 @@ const matches = await editor.grep({ regex: /console\.log/ });
 await editor.edit({ url: matches[0].url, oldString: 'DEBUG = false', newString: 'DEBUG = true' });
 ```
 
-**showAriaRefLabels** - overlay Vimium-style visual labels on interactive elements. Useful for taking screenshots where you can see element references. Labels auto-hide after 5 seconds. Call again if page HTML changes to get fresh labels.
+**showAriaRefLabels** - overlay Vimium-style visual labels on interactive elements. Useful for taking screenshots where you can see element references. Labels auto-hide after 30 seconds. Call again if page HTML changes or scrolls to get fresh labels. Use a timeout of 10 seconds at least.
 
 ```js
 const { snapshot, labelCount } = await showAriaRefLabels({ page });
@@ -218,7 +218,7 @@ await page.locator('aria-ref=e5').click();
 
 Labels are color-coded: yellow=links, orange=buttons, coral=inputs, pink=checkboxes, peach=sliders, salmon=menus, amber=tabs.
 
-**hideAriaRefLabels** - manually remove labels before the 5-second auto-hide:
+**hideAriaRefLabels** - manually remove labels before the 30-second auto-hide:
 
 ```js
 await hideAriaRefLabels({ page });

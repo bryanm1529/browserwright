@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.39
+
+### Patch Changes
+
+- **Fix icon not updating on WS disconnect**: `maintainLoop` now ensures tabs transition to 'connecting' state when WebSocket is not connected, fixing edge cases where `handleClose` wasn't called
+- **Increased aria-labels auto-hide timeout**: Labels now auto-hide after 30 seconds instead of 5 seconds
+
 ## 0.0.38
 
 ### Patch Changes
@@ -16,7 +23,7 @@
   - Only shows truly interactive roles (button, link, textbox, combobox, checkbox, etc.)
   - Skips elements covered by opaque overlays using `elementsFromPoint()`
   - Greedy overlap prevention skips labels that would overlap with already-placed ones
-  - Auto-hides after 5 seconds to prevent stale labels (timer cancelled if called again)
+  - Auto-hides after 30 seconds to prevent stale labels (timer cancelled if called again)
   - Available in MCP execute context
 
 ### Usage
@@ -25,7 +32,7 @@
 const { snapshot, labelCount } = await showAriaRefLabels({ page });
 await page.screenshot({ path: '/tmp/labeled-page.png' });
 await page.locator('aria-ref=e5').click();
-// Labels auto-hide after 5 seconds, or call hideAriaRefLabels({ page }) manually
+// Labels auto-hide after 30 seconds, or call hideAriaRefLabels({ page }) manually
 ```
 
 ## 0.0.35
