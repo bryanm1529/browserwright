@@ -206,6 +206,24 @@ const matches = await editor.grep({ regex: /console\.log/ });
 await editor.edit({ url: matches[0].url, oldString: 'DEBUG = false', newString: 'DEBUG = true' });
 ```
 
+**showAriaRefLabels** - overlay Vimium-style visual labels on interactive elements. Useful for taking screenshots where you can see element references. Labels auto-hide after 5 seconds. Call again if page HTML changes to get fresh labels.
+
+```js
+const { snapshot, labelCount } = await showAriaRefLabels({ page });
+console.log(`Showing ${labelCount} labels`);
+await page.screenshot({ path: '/tmp/labeled-page.png' });
+// Use aria-ref from snapshot to interact
+await page.locator('aria-ref=e5').click();
+```
+
+Labels are color-coded: yellow=links, orange=buttons, coral=inputs, pink=checkboxes, peach=sliders, salmon=menus, amber=tabs.
+
+**hideAriaRefLabels** - manually remove labels before the 5-second auto-hide:
+
+```js
+await hideAriaRefLabels({ page });
+```
+
 ## pinned elements
 
 Users can right-click → "Copy Playwriter Element Reference" to store elements in `globalThis.playwriterPinnedElem1` (increments for each pin). The reference is copied to clipboard:
