@@ -237,11 +237,12 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
   // ElementHandles get unwrapped to DOM elements in browser context
   // Using 'any' types here since this code runs in browser context
   const labelCount = await page.evaluate(
+    // Using 'any' for browser types since this runs in browser context
     ({ refs, containerId, containerStyles, labelStyles, roleColors, defaultColors }: {
       refs: Array<{
         ref: string
         role: string
-        element: { getBoundingClientRect(): { width: number; height: number; left: number; top: number; right: number; bottom: number } }
+        element: any // Element in browser context
       }>
       containerId: string
       containerStyles: string
@@ -273,6 +274,65 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
       const LABEL_HEIGHT = 16
       const LABEL_CHAR_WIDTH = 7 // approximate width per character
 
+      // Parse alpha from rgb/rgba color string (getComputedStyle always returns these formats)
+      const getColorAlpha = (color: string): number => {
+        if (color === 'transparent') return 0
+        // Match rgba(r, g, b, a) or rgb(r, g, b)
+        const match = color.match(/rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(?:,\s*([\d.]+)\s*)?\)/)
+        if (match) {
+          return match[1] !== undefined ? parseFloat(match[1]) : 1
+        }
+        return 1 // Default to opaque for unrecognized formats
+      }
+
+      // Check if an element has an opaque background that would block elements behind it
+      const isOpaqueElement = (el: any): boolean => {
+        const style = win.getComputedStyle(el)
+
+        // Check element opacity
+        const opacity = parseFloat(style.opacity)
+        if (opacity < 0.1) return false
+
+        // Check background-color alpha
+        const bgAlpha = getColorAlpha(style.backgroundColor)
+        if (bgAlpha > 0.1) return true
+
+        // Check if has background-image (usually opaque)
+        if (style.backgroundImage !== 'none') return true
+
+        return false
+      }
+
+      // Check if element is visible (not covered by opaque overlay)
+      const isElementVisible = (element: any, rect: any): boolean => {
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+
+        // Get all elements at this point, from top to bottom
+        const stack = doc.elementsFromPoint(centerX, centerY) as any[]
+
+        // Find our target element in the stack
+        const targetIndex = stack.findIndex((el: any) =>
+          element.contains(el) || el.contains(element)
+        )
+
+        // Element not in stack at all - not visible
+        if (targetIndex === -1) return false
+
+        // Check if any opaque element is above our target
+        for (let i = 0; i < targetIndex; i++) {
+          const el = stack[i]
+          // Skip our own overlay container
+          if (el.id === containerId) continue
+          // Skip pointer-events: none elements (decorative overlays)
+          if (win.getComputedStyle(el).pointerEvents === 'none') continue
+          // If this element is opaque, our target is blocked
+          if (isOpaqueElement(el)) return false
+        }
+
+        return true
+      }
+
       // Check if two rectangles overlap
       const rectsOverlap = (
         a: { left: number; top: number; right: number; bottom: number },
@@ -288,6 +348,11 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
 
         // Skip elements with no size (hidden)
         if (rect.width === 0 || rect.height === 0) {
+          continue
+        }
+
+        // Skip elements that are covered by opaque overlays
+        if (!isElementVisible(element, rect)) {
           continue
         }
 
