@@ -10,7 +10,6 @@
 
 - **Bigger label font**: Increased label font size from 11px to 12px for better readability
 - **Fixed screenshot dimensions**: Screenshots now use actual viewport size (`innerWidth`/`innerHeight`) with `scale: 'css'` to match visual appearance
-- **Security: origin validation for /extension endpoint**: WebSocket connections to `/extension` now require `Origin` header from `chrome-extension://` only, preventing unauthorized connections from web pages
 
 ## 0.0.40
 
