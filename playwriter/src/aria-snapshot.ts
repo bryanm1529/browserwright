@@ -391,6 +391,41 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
         return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
       }
 
+      // Create SVG for connector lines
+      const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;overflow:visible;'
+      svg.setAttribute('width', `${doc.documentElement.scrollWidth}`)
+      svg.setAttribute('height', `${doc.documentElement.scrollHeight}`)
+
+      // Create defs for arrow markers (one per color)
+      const defs = doc.createElementNS('http://www.w3.org/2000/svg', 'defs')
+      svg.appendChild(defs)
+      const markerCache: Record<string, string> = {}
+
+      function getArrowMarkerId(color: string): string {
+        if (markerCache[color]) {
+          return markerCache[color]
+        }
+        const markerId = `arrow-${color.replace('#', '')}`
+        const marker = doc.createElementNS('http://www.w3.org/2000/svg', 'marker')
+        marker.setAttribute('id', markerId)
+        marker.setAttribute('viewBox', '0 0 10 10')
+        marker.setAttribute('refX', '9')
+        marker.setAttribute('refY', '5')
+        marker.setAttribute('markerWidth', '6')
+        marker.setAttribute('markerHeight', '6')
+        marker.setAttribute('orient', 'auto-start-reverse')
+        const path = doc.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z')
+        path.setAttribute('fill', color)
+        marker.appendChild(path)
+        defs.appendChild(marker)
+        markerCache[color] = markerId
+        return markerId
+      }
+
+      container.appendChild(svg)
+
       // Create label for each interactive element
       let count = 0
       for (const { ref, role, element } of refs) {
@@ -444,6 +479,22 @@ export async function showAriaRefLabels({ page, interactiveOnly = true }: {
         label.style.top = `${win.scrollY + labelTop}px`
 
         container.appendChild(label)
+
+        // Draw connector line from label bottom-center to element center with arrow
+        const line = doc.createElementNS('http://www.w3.org/2000/svg', 'line')
+        const labelCenterX = win.scrollX + labelLeft + labelWidth / 2
+        const labelBottomY = win.scrollY + labelTop + LABEL_HEIGHT
+        const elementCenterX = win.scrollX + rect.left + rect.width / 2
+        const elementCenterY = win.scrollY + rect.top + rect.height / 2
+        line.setAttribute('x1', `${labelCenterX}`)
+        line.setAttribute('y1', `${labelBottomY}`)
+        line.setAttribute('x2', `${elementCenterX}`)
+        line.setAttribute('y2', `${elementCenterY}`)
+        line.setAttribute('stroke', border)
+        line.setAttribute('stroke-width', '1.5')
+        line.setAttribute('marker-end', `url(#${getArrowMarkerId(border)})`)
+        svg.appendChild(line)
+
         placedLabels.push(labelRect)
         count++
       }
