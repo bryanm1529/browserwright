@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.47
+
+### Bug Fixes
+
+- **Improved connection reliability**: Use `127.0.0.1` instead of `localhost` to avoid DNS/IPv6 resolution issues, add 15s global timeout wrapper around `connect()` to prevent hanging forever
+- **Use domcontentloaded everywhere**: Changed `getCurrentPage()` and prompt guidance to use `domcontentloaded` instead of `load` for faster, more reliable page detection
+- **Allow attaching to own extension pages**: Extension pages can now be debugged while still blocking other extensions
+
+### Changes
+
+- **Centralized target filtering**: Consolidated extension ID arrays and target filtering logic for cleaner code
+- **Optional wsUrl in getCDPSessionForPage**: `wsUrl` parameter now defaults to `getCdpUrl()` if not provided
+
 ## 0.0.46
 
 ### Bug Fixes
