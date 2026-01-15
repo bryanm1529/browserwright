@@ -13,3 +13,37 @@ playwriter/src/assets/*.png
 playwriter/src/assets/framer.html
 *-snapshot.txt
 claude-extension
+
+# Security - Never commit these
+.env
+.env.*
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+secrets.json
+*.secret
+.npmrc
+.yarnrc
+.docker-credentials
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Debug
+*.debug
+.debug/
+debug.log

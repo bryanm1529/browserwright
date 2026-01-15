@@ -23,6 +23,8 @@ import { getReactSource, type ReactSourceLocation } from './react-source.js'
 import { ScopedFS } from './scoped-fs.js'
 import { screenshotWithAccessibilityLabels, type ScreenshotResult } from './aria-snapshot.js'
 import { getCleanHTML, type GetCleanHTMLOptions } from './clean-html.js'
+import { RefRegistry, addShortRefPrefix } from './ref-registry.js'
+import { filterSnapshot, type SnapshotFilterOptions } from './snapshot-filter.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -74,6 +76,14 @@ interface VMContext {
     page: Page
     search?: string | RegExp
     showDiffSinceLastCall?: boolean
+    /** Only show interactive elements (button, link, textbox, etc.) - 70-80% token reduction */
+    interactive?: boolean
+    /** Output in compact format: "@e5 link Home" - additional 30% reduction */
+    compact?: boolean
+    /** Maximum indentation depth to include */
+    maxDepth?: number
+    /** Use @eN format in refs (e.g., [ref=@e5] instead of [ref=e5]) */
+    useShortRefs?: boolean
   }) => Promise<string>
   getCleanHTML: (options: GetCleanHTMLOptions) => Promise<string>
   getLocatorStringForElement: (element: any) => Promise<string>
@@ -715,13 +725,40 @@ server.tool(
         page: Page
         search?: string | RegExp
         showDiffSinceLastCall?: boolean
+        interactive?: boolean
+        compact?: boolean
+        maxDepth?: number
+        useShortRefs?: boolean
       }) => {
-        const { page: targetPage, search, showDiffSinceLastCall = false } = options
+        const {
+          page: targetPage,
+          search,
+          showDiffSinceLastCall = false,
+          interactive = false,
+          compact = false,
+          maxDepth,
+          useShortRefs = true, // Default to short refs for cleaner output
+        } = options
+
         if ((targetPage as any)._snapshotForAI) {
           const snapshot = await (targetPage as any)._snapshotForAI()
           // Sanitize to remove unpaired surrogates that break JSON encoding for Claude API
           const rawStr = typeof snapshot === 'string' ? snapshot : JSON.stringify(snapshot, null, 2)
-          const snapshotStr = rawStr.toWellFormed?.() ?? rawStr
+          let snapshotStr = rawStr.toWellFormed?.() ?? rawStr
+
+          // Apply short ref prefix (@eN format) if enabled
+          if (useShortRefs) {
+            snapshotStr = addShortRefPrefix(snapshotStr)
+          }
+
+          // Apply filtering options (interactive, compact, maxDepth)
+          if (interactive || compact || maxDepth !== undefined) {
+            snapshotStr = filterSnapshot(snapshotStr, {
+              interactive,
+              compact,
+              maxDepth,
+            })
+          }
 
           if (showDiffSinceLastCall) {
             const previousSnapshot = lastSnapshots.get(targetPage)
@@ -973,7 +1010,9 @@ server.tool(
 
       const vmContext = vm.createContext(vmContextObj)
 
-      const wrappedCode = `(async () => { ${code} })()`
+      // Resolve short refs (@e5 -> aria-ref=e5) before execution
+      const resolvedCode = RefRegistry.resolveShortRefs(code)
+      const wrappedCode = `(async () => { ${resolvedCode} })()`
 
       const result = await Promise.race([
         vm.runInContext(wrappedCode, vmContext, {

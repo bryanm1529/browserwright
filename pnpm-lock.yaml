@@ -65,8 +65,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(@hono/node-server@1.19.6(hono@4.10.6))(bufferutil@4.0.9)(hono@4.10.6)
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.21.1(@cfworker/json-schema@4.1.1)
+        specifier: ^1.24.0
+        version: 1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76)
       cac:
         specifier: ^6.7.14
         version: 6.7.14
@@ -115,7 +115,7 @@ importers:
     devDependencies:
       '@browserbasehq/stagehand':
         specifier: ^3.0.5
-        version: 3.0.5(@cfworker/json-schema@4.1.1)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(deepmerge@4.3.1)(dotenv@16.6.1)(zod@3.25.76)
+        version: 3.0.5(@cfworker/json-schema@4.1.1)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(deepmerge@4.3.1)(dotenv@16.6.1)(hono@4.10.6)(zod@3.25.76)
       '@mizchi/selector-generator':
         specifier: 1.50.0-next
         version: 1.50.0-next
@@ -1141,6 +1141,12 @@ packages:
     peerDependencies:
       hono: ^4
 
+  '@hono/node-server@1.19.9':
+    resolution: {integrity: sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+
   '@hono/node-ws@1.2.0':
     resolution: {integrity: sha512-OBPQ8OSHBw29mj00wT/xGYtB6HY54j0fNSdVZ7gZM3TUeq0So11GXaWtFf1xWxQNfumKIsj0wRuLKWfVsO5GgQ==}
     engines: {node: '>=18.14.1'}
@@ -1206,11 +1212,12 @@ packages:
   '@mjackson/node-fetch-server@0.7.0':
     resolution: {integrity: sha512-un8diyEBKU3BTVj3GzlTPA1kIjCkGdD+AMYQy31Gf9JCkfoZzwgJ79GUtHrF2BN3XPNMLpubbzPcxys+a3uZEw==}
 
-  '@modelcontextprotocol/sdk@1.21.1':
-    resolution: {integrity: sha512-UyLFcJLDvUuZbGnaQqXFT32CpPpGj7VS19roLut6gkQVhb439xUzYWbsUvdI3ZPL+2hnFosuugtYWE0Mcs1rmQ==}
+  '@modelcontextprotocol/sdk@1.25.2':
+    resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
+      zod: ^3.25 || ^4.0
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
@@ -3418,6 +3425,9 @@ packages:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
+  jose@6.1.3:
+    resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
+
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -3463,6 +3473,9 @@ packages:
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
+
+  json-schema-typed@8.0.2:
+    resolution: {integrity: sha512-fQhoXdcvc3V28x7C7BMs4P5+kNlgUURe2jmUT1T//oBRMDrqy1QPelJimwZGo7Hg9VPV3EQV5Bnq4hbFy2vetA==}
 
   json-schema@0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
@@ -4124,10 +4137,6 @@ packages:
   puppeteer-core@22.15.0:
     resolution: {integrity: sha512-cHArnywCiAAVXa3t4GGL2vttNxh7GqXtIYGym99egkNJ3oG//wL9LkvO4WE8W1TJe95t1F1ocu9X4xWaGsOKOA==}
     engines: {node: '>=18'}
-
-  qs@6.14.0:
-    resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
-    engines: {node: '>=0.6'}
 
   qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
@@ -5029,11 +5038,6 @@ packages:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
 
-  zod-to-json-schema@3.24.6:
-    resolution: {integrity: sha512-h/z3PKvcTcTetyjl1fkj79MHNEjm+HpD6NXheWjzOekY7kV+lwDYnHw+ivHkijnCSMz1yJaWBD9vu/Fcmk+vEg==}
-    peerDependencies:
-      zod: ^3.24.1
-
   zod-to-json-schema@3.25.0:
     resolution: {integrity: sha512-HvWtU2UG41LALjajJrML6uQejQhNJx+JBO9IflpSja4R03iNWfKXrj6W2h7ljuLyc1nKS+9yDyL/9tD1U/yBnQ==}
     peerDependencies:
@@ -5595,14 +5599,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@browserbasehq/stagehand@3.0.5(@cfworker/json-schema@4.1.1)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(deepmerge@4.3.1)(dotenv@16.6.1)(zod@3.25.76)':
+  '@browserbasehq/stagehand@3.0.5(@cfworker/json-schema@4.1.1)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(deepmerge@4.3.1)(dotenv@16.6.1)(hono@4.10.6)(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@anthropic-ai/sdk': 0.39.0
       '@browserbasehq/sdk': 2.6.0
-      '@google/genai': 1.31.0(@modelcontextprotocol/sdk@1.21.1(@cfworker/json-schema@4.1.1))(bufferutil@4.0.9)
+      '@google/genai': 1.31.0(@modelcontextprotocol/sdk@1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76))(bufferutil@4.0.9)
       '@langchain/openai': 0.4.9(@langchain/core@0.3.79(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@4.104.0(ws@8.18.3(bufferutil@4.0.9))(zod@3.25.76)))(ws@8.18.3(bufferutil@4.0.9))
-      '@modelcontextprotocol/sdk': 1.21.1(@cfworker/json-schema@4.1.1)
+      '@modelcontextprotocol/sdk': 1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76)
       ai: 5.0.108(zod@3.25.76)
       deepmerge: 4.3.1
       devtools-protocol: 0.0.1464554
@@ -5642,6 +5646,7 @@ snapshots:
       - bare-abort-controller
       - bare-buffer
       - encoding
+      - hono
       - react-native-b4a
       - supports-color
       - utf-8-validate
@@ -6047,18 +6052,22 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@google/genai@1.31.0(@modelcontextprotocol/sdk@1.21.1(@cfworker/json-schema@4.1.1))(bufferutil@4.0.9)':
+  '@google/genai@1.31.0(@modelcontextprotocol/sdk@1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76))(bufferutil@4.0.9)':
     dependencies:
       google-auth-library: 10.5.0
       ws: 8.18.3(bufferutil@4.0.9)
     optionalDependencies:
-      '@modelcontextprotocol/sdk': 1.21.1(@cfworker/json-schema@4.1.1)
+      '@modelcontextprotocol/sdk': 1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
 
   '@hono/node-server@1.19.6(hono@4.10.6)':
+    dependencies:
+      hono: 4.10.6
+
+  '@hono/node-server@1.19.9(hono@4.10.6)':
     dependencies:
       hono: 4.10.6
 
@@ -6161,8 +6170,9 @@ snapshots:
 
   '@mjackson/node-fetch-server@0.7.0': {}
 
-  '@modelcontextprotocol/sdk@1.21.1(@cfworker/json-schema@4.1.1)':
+  '@modelcontextprotocol/sdk@1.25.2(@cfworker/json-schema@4.1.1)(hono@4.10.6)(zod@3.25.76)':
     dependencies:
+      '@hono/node-server': 1.19.9(hono@4.10.6)
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       content-type: 1.0.5
@@ -6172,13 +6182,16 @@ snapshots:
       eventsource-parser: 3.0.6
       express: 5.1.0
       express-rate-limit: 7.5.1(express@5.1.0)
+      jose: 6.1.3
+      json-schema-typed: 8.0.2
       pkce-challenge: 5.0.0
       raw-body: 3.0.1
       zod: 3.25.76
-      zod-to-json-schema: 3.24.6(zod@3.25.76)
+      zod-to-json-schema: 3.25.0(zod@3.25.76)
     optionalDependencies:
       '@cfworker/json-schema': 4.1.1
     transitivePeerDependencies:
+      - hono
       - supports-color
 
   '@nodelib/fs.scandir@2.1.5':
@@ -7352,14 +7365,6 @@ snapshots:
     optionalDependencies:
       vite: 7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)
 
-  '@vitest/mocker@4.0.8(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))':
-    dependencies:
-      '@vitest/spy': 4.0.8
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)
-
   '@vitest/mocker@4.0.8(vite@7.2.2(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))':
     dependencies:
       '@vitest/spy': 4.0.8
@@ -7411,7 +7416,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.8(@types/node@24.10.1)(@vitest/ui@4.0.8)(jiti@2.6.1)(jsdom@27.2.0(bufferutil@4.0.9))(lightningcss@1.30.2)(tsx@4.20.6)
+      vitest: 4.0.8(@types/node@25.0.3)(@vitest/ui@4.0.8)(jiti@2.6.1)(jsdom@27.2.0(bufferutil@4.0.9))(lightningcss@1.30.2)(tsx@4.20.6)
 
   '@vitest/utils@4.0.16':
     dependencies:
@@ -7656,10 +7661,10 @@ snapshots:
       bytes: 3.1.2
       content-type: 1.0.5
       debug: 4.4.3
-      http-errors: 2.0.0
+      http-errors: 2.0.1
       iconv-lite: 0.6.3
       on-finished: 2.4.1
-      qs: 6.14.0
+      qs: 6.14.1
       raw-body: 3.0.1
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -8256,14 +8261,14 @@ snapshots:
       etag: 1.8.1
       finalhandler: 2.1.0
       fresh: 2.0.0
-      http-errors: 2.0.0
+      http-errors: 2.0.1
       merge-descriptors: 2.0.0
       mime-types: 3.0.1
       on-finished: 2.4.1
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.14.0
+      qs: 6.14.1
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.0
@@ -8731,6 +8736,8 @@ snapshots:
 
   jiti@2.6.1: {}
 
+  jose@6.1.3: {}
+
   joycon@3.1.1: {}
 
   js-beautify@1.15.4:
@@ -8794,6 +8801,8 @@ snapshots:
       ts-toolbelt: 6.15.5
 
   json-schema-traverse@1.0.0: {}
+
+  json-schema-typed@8.0.2: {}
 
   json-schema@0.4.0: {}
 
@@ -9400,10 +9409,6 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  qs@6.14.0:
-    dependencies:
-      side-channel: 1.1.0
-
   qs@6.14.1:
     dependencies:
       side-channel: 1.1.0
@@ -9629,7 +9634,7 @@ snapshots:
       escape-html: 1.0.3
       etag: 1.8.1
       fresh: 2.0.0
-      http-errors: 2.0.0
+      http-errors: 2.0.1
       mime-types: 3.0.1
       ms: 2.1.3
       on-finished: 2.4.1
@@ -10207,7 +10212,7 @@ snapshots:
   vitest@4.0.8(@types/node@24.10.1)(@vitest/ui@4.0.8)(jiti@2.6.1)(jsdom@27.2.0(bufferutil@4.0.9))(lightningcss@1.30.2)(tsx@4.20.6):
     dependencies:
       '@vitest/expect': 4.0.8
-      '@vitest/mocker': 4.0.8(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
+      '@vitest/mocker': 4.0.8(vite@7.2.2(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
       '@vitest/pretty-format': 4.0.8
       '@vitest/runner': 4.0.8
       '@vitest/snapshot': 4.0.8
@@ -10388,10 +10393,6 @@ snapshots:
     optional: true
 
   yocto-queue@1.2.2: {}
-
-  zod-to-json-schema@3.24.6(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
 
   zod-to-json-schema@3.25.0(zod@3.25.76):
     dependencies:
