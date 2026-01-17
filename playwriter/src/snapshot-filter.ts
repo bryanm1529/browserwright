@@ -145,39 +145,3 @@ export function filterSnapshot(
 
   return result
 }
-
-/**
- * Calculate approximate token count for a string
- * Uses rough estimate of 4 characters per token
- */
-export function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 4)
-}
-
-/**
- * Get statistics about snapshot before and after filtering
- */
-export function getFilterStats(
-  original: string,
-  filtered: string
-): {
-  originalChars: number
-  filteredChars: number
-  originalTokens: number
-  filteredTokens: number
-  reductionPercent: number
-} {
-  const originalChars = original.length
-  const filteredChars = filtered.length
-  const originalTokens = estimateTokens(original)
-  const filteredTokens = estimateTokens(filtered)
-  const reductionPercent = Math.round((1 - filteredChars / originalChars) * 100)
-
-  return {
-    originalChars,
-    filteredChars,
-    originalTokens,
-    filteredTokens,
-    reductionPercent,
-  }
-}

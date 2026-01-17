@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { filterSnapshot, INTERACTIVE_ROLES, getFilterStats } from '../src/snapshot-filter'
+import { filterSnapshot, INTERACTIVE_ROLES } from '../src/snapshot-filter'
 import { RefRegistry, addShortRefPrefix } from '../src/ref-registry'
 
 // Sample snapshot from Hacker News
@@ -37,18 +37,6 @@ describe('RefRegistry', () => {
     const code = 'await page.locator(`@e3`).click()'
     const resolved = RefRegistry.resolveShortRefs(code)
     expect(resolved).toBe('await page.locator(`aria-ref=e3`).click()')
-  })
-
-  it('hasShortRefs detects patterns', () => {
-    expect(RefRegistry.hasShortRefs('@e5')).toBe(true)
-    expect(RefRegistry.hasShortRefs('aria-ref=e5')).toBe(false)
-    expect(RefRegistry.hasShortRefs('click @e16 button')).toBe(true)
-  })
-
-  it('extractRefs finds all refs', () => {
-    const code = 'click @e5 then @e16 and @e5 again'
-    const refs = RefRegistry.extractRefs(code)
-    expect(refs).toEqual(['e5', 'e16']) // Unique refs only
   })
 })
 
@@ -121,11 +109,9 @@ describe('filterSnapshot', () => {
     })
   })
 
-  it('achieves significant token reduction', () => {
+  it('achieves significant reduction', () => {
     const filtered = filterSnapshot(sampleSnapshot, { interactive: true, compact: true })
-    const stats = getFilterStats(sampleSnapshot, filtered)
-
-    // Should achieve at least 50% reduction
-    expect(stats.reductionPercent).toBeGreaterThanOrEqual(50)
+    // Compact + interactive should reduce output significantly
+    expect(filtered.length).toBeLessThan(sampleSnapshot.length * 0.5)
   })
 })

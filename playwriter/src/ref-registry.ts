@@ -18,30 +18,10 @@ export class RefRegistry {
    * // Output: "await page.locator('aria-ref=e5').click()"
    */
   static resolveShortRefs(code: string): string {
-    // Match @eN patterns (e.g., @e1, @e5, @e123)
-    // Handle various contexts: '@e5', "@e5", `@e5`, @e5 (without quotes)
     return code.replace(
       /(['"`])@(e\d+)\1/g,
       (_, quote, ref) => `${quote}aria-ref=${ref}${quote}`
     )
-  }
-
-  /**
-   * Check if code contains any @eN short ref patterns
-   */
-  static hasShortRefs(code: string): boolean {
-    return /@e\d+/.test(code)
-  }
-
-  /**
-   * Extract all short refs from code
-   *
-   * @returns Array of refs like ['e5', 'e16', 'e23']
-   */
-  static extractRefs(code: string): string[] {
-    const matches = code.match(/@e\d+/g)
-    if (!matches) return []
-    return [...new Set(matches.map(m => m.slice(1)))] // Remove @ prefix
   }
 }
 
