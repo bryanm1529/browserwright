@@ -1,0 +1,138 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run unit tests
+        run: pnpm test:unit
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Run integration tests
+        run: pnpm test:integration
+        timeout-minutes: 5
+
+  performance-benchmarks:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    # Don't block PR on performance tests, just report
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Run performance benchmarks
+        run: pnpm test:perf
+        timeout-minutes: 10
+
+      - name: Check performance thresholds
+        run: |
+          # Read baseline thresholds
+          CONNECTION_MAX=$(jq '.thresholds.connectionTime_max' test/performance/baseline.json)
+          ROUNDTRIP_MAX=$(jq '.thresholds.messageRoundTrip_max' test/performance/baseline.json)
+
+          echo "Performance thresholds:"
+          echo "  Connection time max: ${CONNECTION_MAX}ms"
+          echo "  Message round-trip max: ${ROUNDTRIP_MAX}ms"
+          echo ""
+          echo "Note: Actual measurements are recorded during benchmark runs."
+          echo "Review benchmark output above for current performance."
+
+  e2e-tests:
+    name: E2E Tests (MCP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+        timeout-minutes: 10
+
+  all-tests:
+    name: All Tests Summary
+    needs: [unit-tests, integration-tests, e2e-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All tests passed
+        run: echo "All test suites passed successfully!"

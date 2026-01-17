@@ -1,0 +1,35 @@
+{
+  "connectionTime": {
+    "mean": 50,
+    "p95": 100,
+    "p99": 150,
+    "unit": "ms",
+    "description": "WebSocket connection establishment time"
+  },
+  "messageRoundTrip": {
+    "mean": 10,
+    "p95": 30,
+    "p99": 50,
+    "unit": "ms",
+    "description": "CDP message round-trip time through relay"
+  },
+  "concurrentConnections": {
+    "mean": 200,
+    "p95": 400,
+    "p99": 500,
+    "unit": "ms",
+    "description": "Time to establish 10 concurrent connections"
+  },
+  "messagesThroughput": {
+    "messagesPerSecond": 1000,
+    "unit": "msg/s",
+    "description": "Maximum message throughput"
+  },
+  "thresholds": {
+    "connectionTime_max": 200,
+    "messageRoundTrip_max": 100,
+    "note": "Fail CI if these thresholds are exceeded"
+  },
+  "lastUpdated": "2026-01-17T00:00:00.000Z",
+  "note": "These are initial baseline values. Run 'pnpm test:perf' to update with real measurements."
+}

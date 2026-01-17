@@ -13,7 +13,12 @@
     "typecheck": "tsc --noEmit",
     "mcp": "vite-node src/mcp.ts",
     "test": "vitest run -u",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:unit": "vitest run --config vitest.unit.config.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:perf": "vitest bench --config vitest.perf.config.ts",
+    "test:e2e": "vitest run --config vitest.config.ts src/mcp.test.ts",
+    "test:all": "pnpm test:unit && pnpm test:integration && pnpm test"
   },
   "bin": "./bin.js",
   "files": [
