@@ -2,7 +2,7 @@
 
 Control your actual Chrome browser with AI - like Playwright, but for tabs you're already using.
 
-[**Install from Chrome Web Store**](https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe)
+[**Install from Chrome Web Store**](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe)
 
 ## What is Browserwright?
 

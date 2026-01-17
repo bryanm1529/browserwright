@@ -9,7 +9,7 @@
     <br/>
     <p>Like Playwright MCP but via extension. 80% less context window. 10x more capable (full playwright API)</p>
     <br/>
-    <a href="https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe">
+    <a href="https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe">
         <strong>Install Extension from Chrome Web Store</strong>
     </a>
     <br/>
@@ -20,7 +20,7 @@
 
 1. **Install the Chrome Extension**
 
-   [**Install Extension**](https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe) - Install the [Browserwright MCP Extension](https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe) from the Chrome Web Store (or load it unpacked during development). Pin the extension to your Chrome toolbar for easy access.
+   [**Install Extension**](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe) - Install the [Browserwright MCP Extension](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe) from the Chrome Web Store (or load it unpacked during development). Pin the extension to your Chrome toolbar for easy access.
 
 2. **Connect to a Tab**
 
@@ -53,7 +53,7 @@
 
 ### Using the MCP
 
-**Important:** Before using the MCP, you must [install](https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe) and enable the extension on at least one tab:
+**Important:** Before using the MCP, you must [install](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe) and enable the extension on at least one tab:
 
 1. Pin the Browserwright extension to your Chrome toolbar (click the puzzle icon)
 2. Navigate to a tab you want to control

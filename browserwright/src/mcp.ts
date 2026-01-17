@@ -126,7 +126,7 @@ const lastSnapshots: WeakMap<Page, string> = new WeakMap()
 const cdpSessionCache: WeakMap<Page, CDPSession> = new WeakMap()
 
 const RELAY_PORT = Number(process.env.BROWSERWRIGHT_PORT) || 19988
-const NO_TABS_ERROR = `No browser tabs are connected. Please install and enable the Browserwright extension on at least one tab: https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe`
+const NO_TABS_ERROR = `No browser tabs are connected. Please install and enable the Browserwright extension on at least one tab: https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe`
 
 // Create a scoped fs instance that allows access to cwd, /tmp, and os.tmpdir()
 const scopedFs = new ScopedFS()
@@ -1214,7 +1214,7 @@ server.tool(
                 3. Or click the Browserwright extension icon on the tab they want to control
                 4. Or drag a tab into the 'browserwright' tab group
 
-                Extension: https://chromewebstore.google.com/detail/playwriter-mcp/jfeammnjpkecdekppnclgkkffahnhfhe
+                Extension: https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe
               `,
             },
           ],
