@@ -1,16 +1,19 @@
 import { expect, test } from 'vitest'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { formatHtmlForPrompt } from './htmlrewrite.js'
 
-test('formatHtmlForPrompt', async () => {
-  const html = readFileSync(new URL('./assets/framer.html', import.meta.url), 'utf-8')
+const framerHtmlPath = new URL('./assets/framer.html', import.meta.url)
+const hasFramerHtml = existsSync(framerHtmlPath)
+
+test.skipIf(!hasFramerHtml)('formatHtmlForPrompt', async () => {
+  const html = readFileSync(framerHtmlPath, 'utf-8')
   const newHtml = await formatHtmlForPrompt({ html })
   expect(newHtml).toMatchInlineSnapshot(
     `
     "<!doctype html>
     <html data-redirect-timezone="1">
      <body>
-      <div data-framer-hydrate-v2="{&quot;routeId&quot;:&quot;Zw20hns9v&quot;,&quot;localeId&quot;:&quot;default&quot;,&quot;breakpoints&quot;:[{&quot;hash&quot;:&quot;2ngqvi&quot;,&quot;mediaQuery&quot;:&quot;(min-width: 1200px)&quot;},{&quot;hash&quot;:&quot;11ziuji&quot;,&quot;mediaQuery&quot;:&quot;(min-width: 810px) and (max-width: 1199.98px)&quot;},{&quot;hash&quot;:...237 more characters" data-framer-ssr-released-at="2026-01-14T12:43:55.253Z" data-framer-page-optimized-at="2026-01-14T15:47:27.367Z" data-framer-generated-page="">
+      <div data-framer-hydrate-v2="{&quot;routeId&quot;:&quot;Zw20hns9v&quot;,&quot;localeId&quot;:&quot;default&quot;,&quot;breakpoints&quot;:[{&quot;hash&quot;:&quot;2ngqvi&quot;,&quot;mediaQuery&quot;:&quot;(min-width: 1200px)&quot;},{&quot;hash&quot;:&quot;11ziuji&quot;,&quot;mediaQuery&quot;:&quot;(min-width: 810px) and (max-width: 1199.98px)&quot;},{&quot;hash&quot;:...237 more characters" data-framer-ssr-released-at="2026-01-16T14:51:06.008Z" data-framer-page-optimized-at="2026-01-16T20:42:58.489Z" data-framer-generated-page="">
        <div data-layout-template="true" data-selection="true">
         <div>
          <nav data-framer-name="Desktop Nav" data-hide-scrollbars="true">
@@ -2545,7 +2548,7 @@ test('formatHtmlForPrompt', async () => {
                <div data-framer-name="UI">
                 <div data-framer-name="Stats">
                  <div data-border="true" data-framer-name="Content">
-                  <p>January 14, 2026</p>
+                  <p>January 16, 2026</p>
                   <div>
                    <div data-framer-component-type="RichTextContainer">
                     <p>Pageviews</p>
@@ -2805,7 +2808,7 @@ test('formatHtmlForPrompt', async () => {
                <div data-framer-name="UI">
                 <div data-framer-name="Stats">
                  <div data-border="true" data-framer-name="Content">
-                  <p>January 14, 2026</p>
+                  <p>January 16, 2026</p>
                   <div>
                    <div data-framer-component-type="RichTextContainer">
                     <p>Pageviews</p>
@@ -3065,7 +3068,7 @@ test('formatHtmlForPrompt', async () => {
                <div data-framer-name="UI">
                 <div data-framer-name="Stats">
                  <div data-border="true" data-framer-name="Content">
-                  <p>January 14, 2026</p>
+                  <p>January 16, 2026</p>
                   <div>
                    <div data-framer-component-type="RichTextContainer">
                     <p>Pageviews</p>
@@ -12762,22 +12765,31 @@ test('formatHtmlForPrompt', async () => {
               </a>
              </div>
              <div>
+              <div data-framer-component-type="RichTextContainer">
+               <p data-styles-preset="vvG68NbwN">Downloads</p>
+              </div>
+              <div>
+               <a data-border="true" href="https://updates.framer.com/electron/darwin/arm64/Framer.zip?_ga=2.113395847.1447313862.1646043056-273660571.1642151053" target="_blank">
+                <div data-framer-component-type="RichTextContainer">
+                 <p>Mac</p>
+                </div>
+               </a>
+               <a data-border="true" href="https://updates.framer.com/electron/win32/x64/Framer.exe?_ga=2.113395847.1447313862.1646043056-273660571.1642151053" target="_blank">
+                <div data-framer-component-type="RichTextContainer">
+                 <p>Windows</p>
+                </div>
+               </a>
+              </div>
+             </div>
+             <div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
               <div>
                <div data-framer-component-type="SVG" aria-hidden="true"></div>
-               <div data-framer-component-type="SVG" aria-hidden="true"></div>
-               <div>
-                <div data-framer-component-type="SVG" aria-hidden="true"></div>
-                <div data-framer-name="Layer Title" data-framer-component-type="RichTextContainer">
-                 <p>CCPA</p>
-                </div>
+               <div data-framer-name="Layer Title" data-framer-component-type="RichTextContainer">
+                <p>CCPA</p>
                </div>
-               <div data-framer-component-type="SVG" aria-hidden="true"></div>
-              </div>
-              <div data-framer-name="Variant 1">
-               <div data-framer-component-type="RichTextContainer">
-                <p>© Framer B.V.</p>
-               </div>
-               <p>2026</p>
               </div>
              </div>
             </div>
@@ -12818,11 +12830,6 @@ test('formatHtmlForPrompt', async () => {
               <a data-framer-name="Label" data-highlight="true" href="./seo/">
                <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
                 <div>SEO</div>
-               </div>
-               <div data-border="true" data-framer-name="Label">
-                <div data-framer-component-type="RichTextContainer">
-                 <p>New</p>
-                </div>
                </div>
               </a>
               <a data-framer-name="Label" data-highlight="true" href="./collaborate/">
@@ -12971,9 +12978,9 @@ test('formatHtmlForPrompt', async () => {
                <div>Marketplace</div>
               </div>
              </a>
-             <a data-framer-name="Label" data-highlight="true" href="./downloads/">
+             <a data-framer-name="Label" data-highlight="true" href="./guides">
               <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
-               <div>Downloads</div>
+               <div>Guides</div>
               </div>
              </a>
              <a data-framer-name="Label" data-highlight="true" href="./developers/">
@@ -13101,6 +13108,24 @@ test('formatHtmlForPrompt', async () => {
            </div>
           </div>
           <div data-framer-name="COOKIE BANNER — DO NOT REMOVE" name="COOKIE BANNER — DO NOT REMOVE"></div>
+          <div data-border="true">
+           <div>
+            <div data-framer-component-type="RichTextContainer">
+             <p>Get an AI summary of Framer</p>
+            </div>
+            <div>
+             <a data-framer-name="OpenAI" href="https://chat.openai.com/?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20workflow.%0...1022 more characters" target="_blank"></a>
+             <a data-framer-name="Gemini" href="https://www.google.com/search?udm=50&amp;q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20...698 more characters" target="_blank"></a>
+             <a data-framer-name="Perplexity" href="https://www.perplexity.ai/search?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20wor...530 more characters" target="_blank"></a>
+            </div>
+           </div>
+           <div data-framer-name="Variant 1">
+            <div data-framer-component-type="RichTextContainer">
+             <p>© Framer B.V.</p>
+            </div>
+            <p>2026</p>
+           </div>
+          </div>
          </footer>
          <footer data-framer-name="Tablet">
           <div>
@@ -13128,22 +13153,31 @@ test('formatHtmlForPrompt', async () => {
               </a>
              </div>
              <div>
+              <div data-framer-component-type="RichTextContainer">
+               <p data-styles-preset="vvG68NbwN">Downloads</p>
+              </div>
+              <div>
+               <a data-border="true" href="https://updates.framer.com/electron/darwin/arm64/Framer.zip?_ga=2.113395847.1447313862.1646043056-273660571.1642151053" target="_blank">
+                <div data-framer-component-type="RichTextContainer">
+                 <p>Mac</p>
+                </div>
+               </a>
+               <a data-border="true" href="https://updates.framer.com/electron/win32/x64/Framer.exe?_ga=2.113395847.1447313862.1646043056-273660571.1642151053" target="_blank">
+                <div data-framer-component-type="RichTextContainer">
+                 <p>Windows</p>
+                </div>
+               </a>
+              </div>
+             </div>
+             <div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
+              <div data-framer-component-type="SVG" aria-hidden="true"></div>
               <div>
                <div data-framer-component-type="SVG" aria-hidden="true"></div>
-               <div data-framer-component-type="SVG" aria-hidden="true"></div>
-               <div>
-                <div data-framer-component-type="SVG" aria-hidden="true"></div>
-                <div data-framer-name="Layer Title" data-framer-component-type="RichTextContainer">
-                 <p>CCPA</p>
-                </div>
+               <div data-framer-name="Layer Title" data-framer-component-type="RichTextContainer">
+                <p>CCPA</p>
                </div>
-               <div data-framer-component-type="SVG" aria-hidden="true"></div>
-              </div>
-              <div data-framer-name="Variant 1">
-               <div data-framer-component-type="RichTextContainer">
-                <p>© Framer B.V.</p>
-               </div>
-               <p>2026</p>
               </div>
              </div>
             </div>
@@ -13184,11 +13218,6 @@ test('formatHtmlForPrompt', async () => {
               <a data-framer-name="Label" data-highlight="true" href="./seo/">
                <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
                 <div>SEO</div>
-               </div>
-               <div data-border="true" data-framer-name="Label">
-                <div data-framer-component-type="RichTextContainer">
-                 <p>New</p>
-                </div>
                </div>
               </a>
               <a data-framer-name="Label" data-highlight="true" href="./collaborate/">
@@ -13337,9 +13366,9 @@ test('formatHtmlForPrompt', async () => {
                <div>Marketplace</div>
               </div>
              </a>
-             <a data-framer-name="Label" data-highlight="true" href="./downloads/">
+             <a data-framer-name="Label" data-highlight="true" href="./guides">
               <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
-               <div>Downloads</div>
+               <div>Guides</div>
               </div>
              </a>
              <a data-framer-name="Label" data-highlight="true" href="./developers/">
@@ -13467,6 +13496,24 @@ test('formatHtmlForPrompt', async () => {
            </div>
           </div>
           <div data-framer-name="COOKIE BANNER — DO NOT REMOVE" name="COOKIE BANNER — DO NOT REMOVE"></div>
+          <div data-border="true">
+           <div>
+            <div data-framer-component-type="RichTextContainer">
+             <p>Get an AI summary of Framer</p>
+            </div>
+            <div>
+             <a data-framer-name="OpenAI" href="https://chat.openai.com/?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20workflow.%0...1022 more characters" target="_blank"></a>
+             <a data-framer-name="Gemini" href="https://www.google.com/search?udm=50&amp;q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20...698 more characters" target="_blank"></a>
+             <a data-framer-name="Perplexity" href="https://www.perplexity.ai/search?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20wor...530 more characters" target="_blank"></a>
+            </div>
+           </div>
+           <div data-framer-name="Variant 1">
+            <div data-framer-component-type="RichTextContainer">
+             <p>© Framer B.V.</p>
+            </div>
+            <p>2026</p>
+           </div>
+          </div>
          </footer>
          <footer data-framer-name="Mobile">
           <div>
@@ -13475,6 +13522,14 @@ test('formatHtmlForPrompt', async () => {
              <a data-framer-name="On" data-highlight="true" href="./" data-framer-page-link-current="true">
               <div data-framer-component-type="SVG" data-framer-name="Logo" role="img" aria-label="Framer Logo"></div>
              </a>
+             <div>
+              <a aria-label="Twitter / X" data-framer-name="X" href="https://x.com/framer" target="_blank"></a>
+              <a aria-label="Threads" data-framer-name="Threads" href="https://www.threads.com/@framer" target="_blank"></a>
+              <a aria-label="TikTok" data-framer-name="TikTok" href="https://www.tiktok.com/@framer" target="_blank"></a>
+              <a aria-label="Instagram" data-framer-name="Instagram" href="https://www.instagram.com/framer/" target="_blank"></a>
+              <a aria-label="LinkedIn" data-framer-name="LinkedIn" href="https://www.linkedin.com/company/framer/" target="_blank"></a>
+              <a aria-label="YouTube" data-framer-name="YouTube" href="https://www.youtube.com/@Framer" target="_blank"></a>
+             </div>
              <div data-framer-name="Variant 1">
               <a data-framer-name="Loading" href="https://www.framerstatus.com/" target="_blank">
                <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
@@ -13523,11 +13578,6 @@ test('formatHtmlForPrompt', async () => {
               <a data-framer-name="Label" data-highlight="true" href="./seo/">
                <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
                 <div>SEO</div>
-               </div>
-               <div data-border="true" data-framer-name="Label">
-                <div data-framer-component-type="RichTextContainer">
-                 <p>New</p>
-                </div>
                </div>
               </a>
               <a data-framer-name="Label" data-highlight="true" href="./collaborate/">
@@ -13676,9 +13726,9 @@ test('formatHtmlForPrompt', async () => {
                <div>Marketplace</div>
               </div>
              </a>
-             <a data-framer-name="Label" data-highlight="true" href="./downloads/">
+             <a data-framer-name="Label" data-highlight="true" href="./guides">
               <div data-framer-name="Item" data-framer-component-type="RichTextContainer">
-               <div>Downloads</div>
+               <div>Guides</div>
               </div>
              </a>
              <a data-framer-name="Label" data-highlight="true" href="./developers/">
@@ -13817,19 +13867,23 @@ test('formatHtmlForPrompt', async () => {
             </div>
            </div>
           </div>
-          <div>
-           <a href="https://x.com/framer" target="_blank"></a>
-           <a href="https://www.threads.com/@framer" target="_blank"></a>
-           <a href="https://www.tiktok.com/@framer" target="_blank"></a>
-           <a href="https://www.instagram.com/framer/" target="_blank"></a>
-           <a href="https://www.linkedin.com/company/framer/" target="_blank"></a>
-           <a href="https://www.youtube.com/@Framer" target="_blank"></a>
-          </div>
-          <div data-framer-name="Variant 1">
-           <div data-framer-component-type="RichTextContainer">
-            <p>© Framer B.V.</p>
+          <div data-border="true">
+           <div>
+            <div data-framer-component-type="RichTextContainer">
+             <p>Get an AI summary of Framer</p>
+            </div>
+            <div>
+             <a data-framer-name="OpenAI" href="https://chat.openai.com/?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20workflow.%0...1022 more characters" target="_blank"></a>
+             <a data-framer-name="Gemini" href="https://www.google.com/search?udm=50&amp;q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20...698 more characters" target="_blank"></a>
+             <a data-framer-name="Perplexity" href="https://www.perplexity.ai/search?q=As%20a%20potential%20Framer%20customer%2C%20I%20want%20to%20clearly%20understand%20what%20I%20get%20when%20I%20use%20Framer%20and%20how%20it%20fits%20into%20my%20wor...530 more characters" target="_blank"></a>
+            </div>
            </div>
-           <p>2026</p>
+           <div data-framer-name="Variant 1">
+            <div data-framer-component-type="RichTextContainer">
+             <p>© Framer B.V.</p>
+            </div>
+            <p>2026</p>
+           </div>
           </div>
          </footer>
         </div>
