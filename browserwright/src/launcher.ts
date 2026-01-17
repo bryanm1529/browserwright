@@ -2,15 +2,23 @@
  * Browser launcher for "just works" mode
  * Spawns Chrome with debugging enabled and persistent profile
  *
+ * Supports multiple MCP sessions by:
+ * 1. Launching Chrome with a debugging port
+ * 2. Subsequent sessions connect to the existing browser via CDP
+ *
  * Based on best practices from:
  * - Microsoft Playwright MCP: https://github.com/microsoft/playwright-mcp
  * - BrowserStack Guide: https://www.browserstack.com/guide/playwright-persistent-context
+ * - Playwright Issue #19742: https://github.com/microsoft/playwright/issues/19742
  */
 
 import { chromium, BrowserContext, Browser, devices } from 'playwright-core'
 import path from 'node:path'
 import os from 'node:os'
 import fs from 'node:fs'
+
+// Default debugging port for multi-session support
+const DEFAULT_DEBUG_PORT = 9222
 
 export type BrowserChannel = 'chrome' | 'chrome-beta' | 'chrome-dev' | 'chrome-canary' | 'msedge' | 'msedge-beta' | 'msedge-dev'
 
@@ -61,6 +69,57 @@ export function getDefaultUserDataDir(channel: BrowserChannel = 'chrome'): strin
 }
 
 /**
+ * Check if a browser profile is currently locked (in use by another process)
+ * Chrome creates a SingletonLock file when using a profile
+ */
+export function isProfileLocked(userDataDir: string): boolean {
+  const lockFile = path.join(userDataDir, 'SingletonLock')
+  try {
+    // On Linux, SingletonLock is a symlink pointing to the PID
+    const stats = fs.lstatSync(lockFile)
+    if (stats.isSymbolicLink()) {
+      // Check if the PID in the symlink is still running
+      try {
+        const target = fs.readlinkSync(lockFile)
+        // Format is typically "hostname-pid" or just the hostname
+        const pidMatch = target.match(/-(\d+)$/)
+        if (pidMatch) {
+          const pid = parseInt(pidMatch[1], 10)
+          // Check if process is running (signal 0 doesn't kill, just checks)
+          process.kill(pid, 0)
+          return true // Process is running
+        }
+      } catch {
+        // Process not running or can't check - assume not locked
+        return false
+      }
+    }
+    return stats.isFile() || stats.isSymbolicLink()
+  } catch {
+    return false // Lock file doesn't exist
+  }
+}
+
+/**
+ * Try to connect to an existing browser on the debugging port
+ * Returns the WebSocket URL if successful, null otherwise
+ */
+export async function tryConnectToExistingBrowser(port: number = DEFAULT_DEBUG_PORT): Promise<string | null> {
+  try {
+    const response = await fetch(`http://127.0.0.1:${port}/json/version`, {
+      signal: AbortSignal.timeout(2000)
+    })
+    if (response.ok) {
+      const data = await response.json() as { webSocketDebuggerUrl?: string }
+      return data.webSocketDebuggerUrl || null
+    }
+  } catch {
+    // No browser found on this port
+  }
+  return null
+}
+
+/**
  * Connect to an existing browser via CDP endpoint
  */
 export async function connectToCDP(cdpEndpoint: string): Promise<LaunchedBrowser> {
@@ -93,6 +152,11 @@ export async function connectToCDP(cdpEndpoint: string): Promise<LaunchedBrowser
 /**
  * Launch a browser with debugging enabled and persistent profile
  * This enables "just works" mode without needing the extension
+ *
+ * Multi-session support:
+ * - First session launches Chrome with --remote-debugging-port
+ * - Subsequent sessions connect to the existing browser via CDP
+ * - All sessions share the same browser instance
  */
 export async function launchBrowser(options: LaunchOptions = {}): Promise<LaunchedBrowser> {
   // If CDP endpoint provided, connect instead of launching
@@ -106,6 +170,35 @@ export async function launchBrowser(options: LaunchOptions = {}): Promise<Launch
   const userDataDir = options.isolated
     ? fs.mkdtempSync(path.join(os.tmpdir(), 'browserwright-'))
     : (options.userDataDir || getDefaultUserDataDir(channel))
+
+  // For persistent mode, check if another session is already using the browser
+  if (!options.isolated) {
+    // First, try to connect to an existing browser on the debugging port
+    const existingWsUrl = await tryConnectToExistingBrowser(DEFAULT_DEBUG_PORT)
+    if (existingWsUrl) {
+      console.error(`[browserwright] Found existing browser, connecting via CDP...`)
+      return connectToCDP(existingWsUrl)
+    }
+
+    // Check if profile is locked (browser running without debugging port)
+    if (isProfileLocked(userDataDir)) {
+      console.error(`[browserwright] Profile is locked by another process`)
+      console.error(`[browserwright] Tip: Close other Chrome instances or use --isolated mode`)
+
+      // Try common debugging ports in case browser was started with one
+      for (const port of [9222, 9223, 9224]) {
+        const wsUrl = await tryConnectToExistingBrowser(port)
+        if (wsUrl) {
+          console.error(`[browserwright] Found browser on port ${port}, connecting...`)
+          return connectToCDP(wsUrl)
+        }
+      }
+
+      // Last resort: fall back to isolated mode
+      console.error(`[browserwright] Falling back to isolated mode (temporary profile)`)
+      return launchBrowser({ ...options, isolated: true })
+    }
+  }
 
   // Ensure the profile directory exists
   fs.mkdirSync(userDataDir, { recursive: true })
@@ -122,72 +215,88 @@ export async function launchBrowser(options: LaunchOptions = {}): Promise<Launch
   }
 
   // Combine base args with any custom args
+  // Include debugging port for multi-session support
   const baseArgs = [
     // Reduce automation detection
     '--disable-blink-features=AutomationControlled',
+    // Enable debugging port so other sessions can connect
+    `--remote-debugging-port=${DEFAULT_DEBUG_PORT}`,
   ]
   const allArgs = [...baseArgs, ...(options.args || [])]
 
-  // Launch persistent context - this keeps logins between sessions
-  const context = await chromium.launchPersistentContext(userDataDir, {
-    headless: options.headless ?? false,
-    channel,
-    executablePath: options.executablePath,
-    viewport: deviceDescriptor?.viewport || options.viewport || { width: 1280, height: 720 },
-    userAgent: deviceDescriptor?.userAgent,
-    deviceScaleFactor: deviceDescriptor?.deviceScaleFactor,
-    isMobile: deviceDescriptor?.isMobile,
-    hasTouch: deviceDescriptor?.hasTouch,
-    args: allArgs,
-    ignoreDefaultArgs: ['--enable-automation'],
-  })
+  try {
+    // Launch persistent context - this keeps logins between sessions
+    const context = await chromium.launchPersistentContext(userDataDir, {
+      headless: options.headless ?? false,
+      channel,
+      executablePath: options.executablePath,
+      viewport: deviceDescriptor?.viewport || options.viewport || { width: 1280, height: 720 },
+      userAgent: deviceDescriptor?.userAgent,
+      deviceScaleFactor: deviceDescriptor?.deviceScaleFactor,
+      isMobile: deviceDescriptor?.isMobile,
+      hasTouch: deviceDescriptor?.hasTouch,
+      args: allArgs,
+      ignoreDefaultArgs: ['--enable-automation'],
+    })
 
-  // Get browser reference (may be null for persistent contexts)
-  const browser = context.browser()
+    // Get browser reference (may be null for persistent contexts)
+    const browser = context.browser()
 
-  // Create initial page if none exists
-  if (context.pages().length === 0) {
-    await context.newPage()
-  }
+    // Create initial page if none exists
+    if (context.pages().length === 0) {
+      await context.newPage()
+    }
 
-  console.error(`[browserwright] Browser launched successfully`)
+    console.error(`[browserwright] Browser launched successfully`)
+    console.error(`[browserwright] Debugging port: ${DEFAULT_DEBUG_PORT} (other sessions can connect)`)
 
-  return {
-    context,
-    browser,
-    wsEndpoint: null, // Persistent contexts don't expose wsEndpoint
-    userDataDir,
-    mode: options.isolated ? 'isolated' : 'launch',
-    close: async () => {
-      await context.close()
-      // Clean up temp directory for isolated mode
-      if (options.isolated) {
-        try {
-          fs.rmSync(userDataDir, { recursive: true, force: true })
-        } catch {
-          // Ignore cleanup errors
+    return {
+      context,
+      browser,
+      wsEndpoint: `ws://127.0.0.1:${DEFAULT_DEBUG_PORT}`,
+      userDataDir,
+      mode: options.isolated ? 'isolated' : 'launch',
+      close: async () => {
+        await context.close()
+        // Clean up temp directory for isolated mode
+        if (options.isolated) {
+          try {
+            fs.rmSync(userDataDir, { recursive: true, force: true })
+          } catch {
+            // Ignore cleanup errors
+          }
         }
       }
     }
+  } catch (error: any) {
+    // Handle "Opening in existing browser session" error
+    if (error.message?.includes('Target page, context or browser has been closed') ||
+        error.message?.includes('Opening in existing browser session')) {
+      console.error(`[browserwright] Launch failed: browser profile is in use`)
+
+      // Wait a moment for the browser to fully start, then try to connect
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      const wsUrl = await tryConnectToExistingBrowser(DEFAULT_DEBUG_PORT)
+      if (wsUrl) {
+        console.error(`[browserwright] Connecting to existing browser...`)
+        return connectToCDP(wsUrl)
+      }
+
+      // Fall back to isolated mode
+      console.error(`[browserwright] Falling back to isolated mode`)
+      return launchBrowser({ ...options, isolated: true })
+    }
+
+    throw error
   }
 }
 
 /**
  * Check if a browser is already running with debugging enabled
  */
-export async function findExistingBrowser(port: number = 9222): Promise<string | null> {
-  try {
-    const response = await fetch(`http://localhost:${port}/json/version`, {
-      signal: AbortSignal.timeout(1000)
-    })
-    if (response.ok) {
-      const data = await response.json() as { webSocketDebuggerUrl?: string }
-      return data.webSocketDebuggerUrl || null
-    }
-  } catch {
-    // No browser found
-  }
-  return null
+export async function findExistingBrowser(port: number = DEFAULT_DEBUG_PORT): Promise<string | null> {
+  return tryConnectToExistingBrowser(port)
 }
 
 /**
