@@ -545,7 +545,7 @@ if (await page.locator('.slow-element').isVisible()) {
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl+Shift+P` / `Cmd+Shift+P` | Attach current tab |
-| `Ctrl+Shift+D` / `Cmd+Shift+D` | Detach current tab |
+| `Ctrl+Shift+X` / `Cmd+Shift+X` | Detach current tab |
 
 ### Extension Icon States
 
