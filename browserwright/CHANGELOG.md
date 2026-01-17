@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.0.48
+
+### Features
+
+- **Auto-launch mode**: Browserwright now auto-launches Chrome with persistent profile when no extension tabs are connected
+  - "Just works" - no extension required for basic usage
+  - Logins persist between sessions (`~/.browserwright/profiles/default`)
+  - Supports device emulation (iPhone, Pixel, etc.)
+  - Isolated mode option (`--isolated`) for fresh sessions
+  - Falls back gracefully between extension and launch modes
+
+- **Stable extension ID**: Added `key` field to manifest for consistent extension ID across installs
+  - Extension ID: `jfcppfbnhfgnfhdeagdgjmgefeabhchp` (development)
+  - Enables reliable CDP relay connection
+
+- **Performance documentation**: Added comprehensive performance tips to prompt.md
+  - waitUntil options ranked by speed (commit → domcontentloaded → load → networkidle)
+  - fill() vs pressSequentially comparison (fill() is 3x faster)
+  - Resource blocking patterns for 40% speed boost in scraping
+  - SPA/lazy-load best practices
+  - Timeout guidelines by operation type
+
+- **Comprehensive testing suite**: Added 4-layer testing infrastructure with CI integration
+  - 53 unit tests for CodeExecutionTimeoutError, extension ID validation, message parsing
+  - 68 integration tests for relay server, connection lifecycle, timeout handling
+  - Performance benchmarks measuring real-world operation timing
+  - GitHub Actions CI workflow (`.github/workflows/test.yml`)
+  - Gap analysis documentation (`test/GAP_ANALYSIS.md`)
+
+### CLI Options
+
+```bash
+browserwright                    # Auto-launches Chrome if no extension tabs
+browserwright --launch           # Force launch mode (spawn new browser)
+browserwright --headless         # Run in headless mode
+browserwright --isolated         # Use temp profile (clean session)
+browserwright --cdp <endpoint>   # Connect to existing browser via CDP
+browserwright --channel chrome-beta  # Use Chrome Beta/Dev/Edge
+```
+
 ## 0.0.47
 
 ### Bug Fixes
