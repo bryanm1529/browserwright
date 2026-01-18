@@ -25,8 +25,10 @@ let config: ExtensionIdsConfig
 
 try {
   config = require(configPath)
-} catch {
+} catch (error) {
   // Fallback if config not found (e.g., in production build)
+  // Log warning so silent fallback is visible in debugging
+  console.warn(`[browserwright] Warning: extension-ids.json not found at ${configPath}, using production ID only. Error: ${error instanceof Error ? error.message : 'unknown'}`)
   config = {
     production: 'jfeammnjpkecdekppnclgkkffahnhfhe',
     development: []
