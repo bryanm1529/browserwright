@@ -440,7 +440,7 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
 
   const cdpEndpoint = getCdpUrl(remote || { port: RELAY_PORT })
 
-  let browser: Browser
+  let browser: Browser | null = null
   let hasExtensionTabs = false
 
   try {
@@ -452,22 +452,24 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
     if (!hasExtensionTabs) {
       // No tabs from extension - close this connection and fall back to launch mode
       await browser.close()
+      browser = null
     }
   } catch (error: any) {
     // Connection failed - will fall back to launch mode
     hasExtensionTabs = false
+    browser = null
   }
 
   // Auto-fallback: if no extension tabs, launch a browser automatically
-  if (!hasExtensionTabs) {
+  if (!hasExtensionTabs || !browser) {
     mcpLog('No extension tabs connected - auto-launching browser for seamless experience')
     state.launchMode = true
     launchOptions = { headless: false } // Headed by default for visibility
     return ensureLaunchModeConnection()
   }
 
-  // Extension mode: we have tabs, proceed with connection
-  browser = await chromium.connectOverCDP(cdpEndpoint)
+  // Extension mode: we have tabs - REUSE the existing browser connection
+  // (DO NOT create a second connection - that causes "Client ID already connected" errors)
 
   // Clear connection state when browser disconnects (e.g., extension reconnects, relay server restarts)
   browser.on('disconnected', () => {

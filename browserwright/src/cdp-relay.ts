@@ -508,13 +508,19 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
 
     return {
       async onOpen(_event, ws) {
-        if (playwrightClients.has(clientId)) {
-          logger?.log(chalk.red(`Rejecting duplicate client ID: ${clientId}`))
-          ws.close(1000, 'Client ID already connected')
-          return
+        // If client ID already exists, close the old connection and replace it
+        // This handles race conditions where cleanup didn't complete before reconnection
+        const existingClient = playwrightClients.get(clientId)
+        if (existingClient) {
+          logger?.log(chalk.yellow(`Replacing existing client connection: ${clientId}`))
+          try {
+            existingClient.ws.close(1000, 'Replaced by new connection')
+          } catch {
+            // Old connection might already be closing
+          }
         }
 
-        // Add client first so it can receive Target.attachedToTarget events
+        // Add/replace client so it can receive Target.attachedToTarget events
         playwrightClients.set(clientId, { id: clientId, ws })
         logger?.log(chalk.green(`Playwright client connected: ${clientId} (${playwrightClients.size} total) (extension? ${!!extensionWs}) (${connectedTargets.size} pages)`))
       },
