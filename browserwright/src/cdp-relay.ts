@@ -16,6 +16,7 @@ type ConnectedTarget = {
   sessionId: string
   targetId: string
   targetInfo: Protocol.Target.TargetInfo
+  owners: Set<string>  // clientIds that own this target for event routing
 }
 
 /**
@@ -255,6 +256,24 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
     })
   }
 
+  function sendToTargetOwners(message: CDPEventBase, sessionId?: string) {
+    if (!sessionId) {
+      // No session context — broadcast (backward compat)
+      sendToPlaywright({ message, source: 'extension' })
+      return
+    }
+    const target = connectedTargets.get(sessionId)
+    if (!target || target.owners.size === 0) {
+      // No owners — broadcast (backward compat: single-agent, manually-attached tabs)
+      sendToPlaywright({ message, source: 'extension' })
+      return
+    }
+    // Route to owners only
+    for (const ownerId of target.owners) {
+      sendToPlaywright({ message, clientId: ownerId, source: 'extension' })
+    }
+  }
+
   // Auto-create initial tab when BROWSERWRIGHT_AUTO_ENABLE is set and no targets exist.
   // This allows Playwright to connect and immediately have a page to work with.
   async function maybeAutoCreateInitialTab(): Promise<void> {
@@ -280,7 +299,8 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
         connectedTargets.set(result.sessionId, {
           sessionId: result.sessionId,
           targetId: result.targetInfo.targetId,
-          targetInfo: result.targetInfo
+          targetInfo: result.targetInfo,
+          owners: new Set()
         })
         logger?.log(chalk.blue(`Auto-created tab, now have ${connectedTargets.size} targets, url: ${result.targetInfo.url}`))
       }
@@ -289,7 +309,7 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
     }
   }
 
-  async function routeCdpCommand({ method, params, sessionId }: { method: string; params: any; sessionId?: string }) {
+  async function routeCdpCommand({ method, params, sessionId, clientId }: { method: string; params: any; sessionId?: string; clientId: string }) {
     switch (method) {
       case 'Browser.getVersion': {
         return {
@@ -328,6 +348,7 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
 
         for (const target of connectedTargets.values()) {
           if (target.targetId === targetId) {
+            target.owners.add(clientId)  // Claim ownership for event routing
             return { sessionId: target.sessionId } satisfies Protocol.Target.AttachToTargetResponse
           }
         }
@@ -584,7 +605,7 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
         }
 
         try {
-          const result: any = await routeCdpCommand({ method, params, sessionId })
+          const result: any = await routeCdpCommand({ method, params, sessionId, clientId })
 
           if (method === 'Target.setAutoAttach' && !sessionId) {
             for (const target of connectedTargets.values()) {
@@ -672,6 +693,18 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
             }
           }
 
+          // Record ownership for Target.createTarget — the extension processes attachTab()
+          // (sending Target.attachedToTarget event) BEFORE returning the response, so by this
+          // point the ConnectedTarget entry already exists and can receive ownership.
+          if (method === 'Target.createTarget' && result?.targetId) {
+            for (const target of connectedTargets.values()) {
+              if (target.targetId === result.targetId) {
+                target.owners.add(clientId)
+                break
+              }
+            }
+          }
+
           const response: CDPResponseBase = { id, sessionId, result }
           sendToPlaywright({ message: response, clientId })
           emitter.emit('cdp:response', { clientId, response, command: message })
@@ -689,6 +722,10 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
 
       onClose() {
         playwrightClients.delete(clientId)
+        // Remove this client from all target ownership sets
+        for (const target of connectedTargets.values()) {
+          target.owners.delete(clientId)
+        }
         logger?.log(chalk.yellow(`Playwright client disconnected: ${clientId} (${playwrightClients.size} remaining)`))
       },
 
@@ -827,67 +864,76 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
             // Check if we already sent this target to clients (e.g., from Target.setAutoAttach response)
             const alreadyConnected = connectedTargets.has(targetParams.sessionId)
 
-            // Always update our local state with latest target info
+            // Always update our local state with latest target info (preserve existing owners)
+            const existing = connectedTargets.get(targetParams.sessionId)
             connectedTargets.set(targetParams.sessionId, {
               sessionId: targetParams.sessionId,
               targetId: targetParams.targetInfo.targetId,
-              targetInfo: targetParams.targetInfo
+              targetInfo: targetParams.targetInfo,
+              owners: existing?.owners ?? new Set()
             })
 
             // Only forward to Playwright if this is a new target to avoid duplicates
             if (!alreadyConnected) {
-              sendToPlaywright({
-                message: {
-                  method: 'Target.attachedToTarget',
-                  params: targetParams
-                } as CDPEventBase,
-                source: 'extension'
-              })
+              sendToTargetOwners({
+                method: 'Target.attachedToTarget',
+                params: targetParams
+              } as CDPEventBase, targetParams.sessionId)
             }
           } else if (method === 'Target.detachedFromTarget') {
             const detachParams = params as Protocol.Target.DetachedFromTargetEvent
+            const detachOwners = connectedTargets.get(detachParams.sessionId)?.owners
             connectedTargets.delete(detachParams.sessionId)
 
-            sendToPlaywright({
-              message: {
-                method: 'Target.detachedFromTarget',
-                params: detachParams
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            const detachMessage = {
+              method: 'Target.detachedFromTarget',
+              params: detachParams
+            } as CDPEventBase
+            if (detachOwners && detachOwners.size > 0) {
+              for (const ownerId of detachOwners) {
+                sendToPlaywright({ message: detachMessage, clientId: ownerId, source: 'extension' })
+              }
+            } else {
+              sendToPlaywright({ message: detachMessage, source: 'extension' })
+            }
           } else if (method === 'Target.targetCrashed') {
             const crashParams = params as Protocol.Target.TargetCrashedEvent
+            let crashOwners: Set<string> | undefined
             for (const [sid, target] of connectedTargets.entries()) {
               if (target.targetId === crashParams.targetId) {
+                crashOwners = target.owners
                 connectedTargets.delete(sid)
                 logger?.log(chalk.red('[Server] Target crashed, removing:'), crashParams.targetId)
                 break
               }
             }
 
-            sendToPlaywright({
-              message: {
-                method: 'Target.targetCrashed',
-                params: crashParams
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            const crashMessage = {
+              method: 'Target.targetCrashed',
+              params: crashParams
+            } as CDPEventBase
+            if (crashOwners && crashOwners.size > 0) {
+              for (const ownerId of crashOwners) {
+                sendToPlaywright({ message: crashMessage, clientId: ownerId, source: 'extension' })
+              }
+            } else {
+              sendToPlaywright({ message: crashMessage, source: 'extension' })
+            }
           } else if (method === 'Target.targetInfoChanged') {
             const infoParams = params as Protocol.Target.TargetInfoChangedEvent
+            let infoSessionId: string | undefined
             for (const target of connectedTargets.values()) {
               if (target.targetId === infoParams.targetInfo.targetId) {
                 target.targetInfo = infoParams.targetInfo
+                infoSessionId = target.sessionId
                 break
               }
             }
 
-            sendToPlaywright({
-              message: {
-                method: 'Target.targetInfoChanged',
-                params: infoParams
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            sendToTargetOwners({
+              method: 'Target.targetInfoChanged',
+              params: infoParams
+            } as CDPEventBase, infoSessionId)
           } else if (method === 'Page.frameNavigated') {
             const frameParams = params as Protocol.Page.FrameNavigatedEvent
             if (!frameParams.frame.parentId && sessionId) {
@@ -902,14 +948,11 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
               }
             }
 
-            sendToPlaywright({
-              message: {
-                sessionId,
-                method,
-                params
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            sendToTargetOwners({
+              sessionId,
+              method,
+              params
+            } as CDPEventBase, sessionId)
           } else if (method === 'Page.navigatedWithinDocument') {
             const navParams = params as Protocol.Page.NavigatedWithinDocumentEvent
             if (sessionId) {
@@ -923,23 +966,17 @@ export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '1
               }
             }
 
-            sendToPlaywright({
-              message: {
-                sessionId,
-                method,
-                params
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            sendToTargetOwners({
+              sessionId,
+              method,
+              params
+            } as CDPEventBase, sessionId)
           } else {
-            sendToPlaywright({
-              message: {
-                sessionId,
-                method,
-                params
-              } as CDPEventBase,
-              source: 'extension'
-            })
+            sendToTargetOwners({
+              sessionId,
+              method,
+              params
+            } as CDPEventBase, sessionId)
           }
         }
       },
