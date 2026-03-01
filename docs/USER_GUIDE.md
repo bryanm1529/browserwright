@@ -210,7 +210,7 @@ const [download] = await Promise.all([
 ]);
 
 // Save the file
-const path = `/tmp/${download.suggestedFilename()}`;
+const path = `./tmp/${download.suggestedFilename()}`;
 await download.saveAs(path);
 console.log('Downloaded to:', path);
 ```
@@ -507,12 +507,23 @@ if (await page.locator('.slow-element').isVisible()) {
 }
 ```
 
+### Execute Errors Include Context
+
+**What to expect**: Failed `execute` runs are prefixed with a category like `[timeout]` or `[selector]`.
+
+**What Browserwright includes**:
+1. Current page URL and title when available
+2. Recent console logs from the page
+3. A compact interactive accessibility snapshot when that context is relevant
+
+Use that context before retrying the action. Connection, sandbox, and target-closed errors intentionally skip the snapshot section because it is usually noise for those failures.
+
 ### Memory Issues with Long Sessions
 
 **Problem**: Browser slows down after many operations.
 
 **Solutions**:
-1. Clear state periodically: `state = {}`
+1. Clear state periodically: `Object.keys(state).forEach((key) => { delete state[key] })`
 2. Close unused pages: `await unusedPage.close()`
 3. Remove listeners: `page.removeAllListeners()`
 4. Restart the browser session periodically
@@ -585,6 +596,6 @@ page.locator('tr').filter({ hasText: 'John' }).locator('button')
 ## Getting Help
 
 - **Logs**: Check `/tmp/browserwright/relay-server.log`
-- **GitHub**: [github.com/bryanm1529/browserwright](https://github.com/bryanm1529/browserwright)
+- **GitHub**: [github.com/sicmundus/browserwright](https://github.com/sicmundus/browserwright)
 - **MCP Docs**: [modelcontextprotocol.io](https://modelcontextprotocol.io)
 - **Playwright Docs**: [playwright.dev](https://playwright.dev)

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.3
+
+### Bug Fixes
+
+- **Enrich execute failures with actionable context**: Browserwright now categorizes execute failures and appends the current page URL/title, recent console logs, and a compact interactive snapshot when that context is useful for the next retry
+- **Normalize malformed snapshot and HTML text on every supported Node runtime**: Browserwright now uses a shared well-formed string helper, so unpaired surrogate cleanup no longer depends on the host runtime exposing `String.prototype.toWellFormed()`
+
+### Changes
+
+- **Align docs with the shipped product behavior**: MCP config snippets now consistently use `npx -y`, user-facing docs point at the current GitHub repo, and download examples use the project `./tmp/` convention instead of `/tmp/`
+
 ## 0.1.2
 
 ### Bug Fixes

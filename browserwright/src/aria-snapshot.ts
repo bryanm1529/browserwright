@@ -1,6 +1,7 @@
 import type { Page, Locator, ElementHandle } from 'playwright-core'
 import fs from 'node:fs'
 import path from 'node:path'
+import { toWellFormedString } from './to-well-formed-string.js'
 
 export interface AriaRef {
   role: string
@@ -136,7 +137,7 @@ export async function getAriaSnapshot({ page, maxRefs = MAX_ARIA_REFS }: {
   const snapshot = await snapshotMethod.call(page)
   // Sanitize to remove unpaired surrogates that break JSON encoding for Claude API
   const rawStr = typeof snapshot === 'string' ? snapshot : (snapshot.full || JSON.stringify(snapshot, null, 2))
-  const snapshotStr = rawStr.toWellFormed?.() ?? rawStr
+  const snapshotStr = toWellFormedString(rawStr)
 
   // Discover refs by probing aria-ref=e1, e2, e3... until 10 consecutive misses
   // Limited by maxRefs to prevent slow pages from causing timeouts

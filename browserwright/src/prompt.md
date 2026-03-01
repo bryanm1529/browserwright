@@ -24,6 +24,7 @@ You can collaborate with the user - they can help with captchas, difficult eleme
 - **CDP sessions**: use `getCDPSession({ page })` not `page.context().newCDPSession()` - the latter doesn't work through Browserwright relay
 - **Wait for load**: use `page.waitForLoadState('domcontentloaded')` not `page.waitForEvent('load')` - waitForEvent times out if already loaded
 - **Avoid timeouts**: prefer proper waits over `page.waitForTimeout()` - there are better ways to wait for elements
+- **Use execute error context**: failed runs are prefixed with categories like `[timeout]` and may include page URL/title, recent console logs, and a compact interactive snapshot. Read that output before retrying.
 
 ## checking page state
 
@@ -249,7 +250,7 @@ await popup.waitForLoadState(); console.log('Popup URL:', popup.url());
 
 ```js
 const [download] = await Promise.all([page.waitForEvent('download'), page.click('button.download')]);
-await download.saveAs(`/tmp/${download.suggestedFilename()}`);
+await download.saveAs(`./tmp/${download.suggestedFilename()}`);
 ```
 
 **iFrames** - use frameLocator:

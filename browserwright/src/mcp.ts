@@ -25,10 +25,11 @@ import { screenshotWithAccessibilityLabels, type ScreenshotResult } from './aria
 import { getCleanHTML, type GetCleanHTMLOptions } from './clean-html.js'
 import { RefRegistry, addShortRefPrefix } from './ref-registry.js'
 import { filterSnapshot, type SnapshotFilterOptions } from './snapshot-filter.js'
-import { classifyError, SKIP_SNAPSHOT_CATEGORIES } from './error-classification.js'
+import { classifyError, SKIP_SNAPSHOT_CATEGORIES, toError } from './error-classification.js'
 import { captureErrorContext } from './error-context.js'
 import { launchBrowser, type LaunchOptions, type LaunchedBrowser, type BrowserChannel } from './launcher.js'
 import { selectPage } from './page-selection.js'
+import { toWellFormedString } from './to-well-formed-string.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -863,7 +864,7 @@ server.tool(
           const snapshot = await (targetPage as any)._snapshotForAI()
           // Sanitize to remove unpaired surrogates that break JSON encoding for Claude API
           const rawStr = typeof snapshot === 'string' ? snapshot : JSON.stringify(snapshot, null, 2)
-          let snapshotStr = rawStr.toWellFormed?.() ?? rawStr
+          let snapshotStr = toWellFormedString(rawStr)
 
           // Apply short ref prefix (@eN format) if enabled
           if (useShortRefs) {
@@ -1235,10 +1236,12 @@ server.tool(
       }
 
       return { content }
-    } catch (error: any) {
+    } catch (rawError: unknown) {
+      // Normalize: user code can throw anything (string, null, number, etc.)
+      const error = toError(rawError)
       const errorStack = error.stack || error.message
       const category = classifyError(error)
-      const isTimeoutError = category === 'timeout' || error instanceof CodeExecutionTimeoutError || error.name === 'TimeoutError'
+      const isTimeoutError = category === 'timeout' || (rawError instanceof CodeExecutionTimeoutError) || error.name === 'TimeoutError'
       const isStaleError = category === 'connection'
 
       // Always log to stderr, but only send non-timeout errors to relay server
@@ -1254,13 +1257,14 @@ server.tool(
         const snapshotFn = (!SKIP_SNAPSHOT_CATEGORIES.has(category) && page && (page as any)._snapshotForAI)
           ? async () => {
               const raw = await (page as any)._snapshotForAI()
-              const str = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2)
+              const rawStr = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2)
+              const str = toWellFormedString(rawStr)
               return filterSnapshot(str, { interactive: true, compact: true, maxDepth: 3 })
             }
           : undefined
 
         contextBlock = await Promise.race([
-          captureErrorContext(page, consoleLogs, snapshotFn),
+          captureErrorContext({ page, consoleLogs, snapshotFn }),
           new Promise<string>((resolve) => setTimeout(() => resolve(''), 1000)),
         ])
       } catch {

@@ -1,6 +1,7 @@
 import { Page, Locator } from 'playwright-core'
 import { createPatch } from 'diff'
 import { formatHtmlForPrompt } from './htmlrewrite.js'
+import { toWellFormedString } from './to-well-formed-string.js'
 
 export interface GetCleanHTMLOptions {
   locator: Locator | Page
@@ -63,7 +64,7 @@ export async function getCleanHTML(options: GetCleanHTMLOptions): Promise<string
   })
 
   // Sanitize to remove unpaired surrogates that break JSON encoding
-  let htmlStr = cleanedHtml.toWellFormed?.() ?? cleanedHtml
+  let htmlStr = toWellFormedString(cleanedHtml)
 
   // Handle diffing
   if (showDiffSinceLastCall) {

@@ -49,7 +49,7 @@ Browserwright runs locally in your browser and does not send any data to externa
 
 ## Support
 
-For issues, feature requests, or contributions, visit the [GitHub repository](https://github.com/bryanm1529/browserwright).
+For issues, feature requests, or contributions, visit the [GitHub repository](https://github.com/sicmundus/browserwright).
 
 ## License
 

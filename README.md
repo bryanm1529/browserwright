@@ -20,7 +20,7 @@ Add to your MCP client config (e.g., Claude Desktop's `claude_desktop_config.jso
   "mcpServers": {
     "browserwright": {
       "command": "npx",
-      "args": ["browserwright@latest"]
+      "args": ["-y", "browserwright@latest"]
     }
   }
 }
@@ -57,6 +57,8 @@ Your AI assistant uses a single `execute` tool that runs Playwright code. Just a
 - Debug with breakpoints and inspect variables
 - Live-edit page scripts and CSS
 - Create new tabs programmatically
+
+If `execute` fails, Browserwright returns a category like `[timeout]` and, when useful, appends the current URL/title, recent console logs, and a compact interactive snapshot to help the next retry self-correct.
 
 ### Using with Playwright
 
@@ -248,7 +250,7 @@ Claude's extension navigates pages step-by-step with screenshots. Browserwright 
 // Complex interactions in one call
 await page.locator('tr').filter({ hasText: 'John' }).locator('button').click()
 const [download] = await Promise.all([page.waitForEvent('download'), page.click('button.export')])
-await download.saveAs('/tmp/report.pdf')
+await download.saveAs('./tmp/report.pdf')
 ```
 
 **Advanced DevTools Features:**
@@ -349,7 +351,7 @@ Configure your MCP client with the host and token. You can pass them as CLI argu
   "mcpServers": {
     "browserwright": {
       "command": "npx",
-      "args": ["browserwright@latest", "--host", "host.docker.internal", "--token", "<secret>"]
+      "args": ["-y", "browserwright@latest", "--host", "host.docker.internal", "--token", "<secret>"]
     }
   }
 }
@@ -362,7 +364,7 @@ Or use environment variables (useful if you want to set them globally in your pr
   "mcpServers": {
     "browserwright": {
       "command": "npx",
-      "args": ["browserwright@latest"],
+      "args": ["-y", "browserwright@latest"],
       "env": {
         "BROWSERWRIGHT_HOST": "host.docker.internal",
         "BROWSERWRIGHT_TOKEN": "<secret>"
