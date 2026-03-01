@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.2
+
+### Bug Fixes
+
+- **Remove the `lsof` runtime dependency from relay cleanup**: Browserwright now uses an internal cross-platform port killer instead of `kill-port-process`, so relay startup, restart, and test cleanup work on systems where `lsof` is not installed
+- **Recover from temporary extension disconnects without getting stuck in auto-launch mode**: Browserwright now treats auto-launch as a fallback instead of a permanent mode switch, so MCP reconnect flows can return to extension tabs after the extension reconnects
+
+### Changes
+
+- **Tighten production package metadata**: Set the published package license to Apache-2.0 and replace the stale extension package author metadata with Browserwright
+- **De-conflict the parallel test port map**: Performance tests now use a separate port range from the integration suites so `pnpm test` no longer races itself on shared localhost ports
+
 ## 0.1.1
 
 ### Bug Fixes

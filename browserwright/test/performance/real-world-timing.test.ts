@@ -8,12 +8,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { startBrowserwrightCDPRelayServer, type RelayServer } from '../../src/cdp-relay.js'
 import { WebSocket } from 'ws'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from '../../src/kill-port-process.js'
 import { createFileLogger } from '../../src/create-logger.js'
 import { chromium, type Browser, type Page } from 'playwright-core'
 import { getCdpUrl } from '../../src/utils.js'
 
-const TIMING_PORT = 19992
+const TIMING_PORT = 18992
 
 interface TimingResult {
   operation: string

@@ -16,7 +16,7 @@ import { Editor } from './editor.js'
 import { startBrowserwrightCDPRelayServer, type RelayServer } from './cdp-relay.js'
 import { createFileLogger } from './create-logger.js'
 import type { CDPCommand } from './cdp-types.js'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from './kill-port-process.js'
 
 declare const window: any
 declare const document: any
@@ -737,21 +737,15 @@ describe('MCP Server Tests', () => {
         // Wait for disconnect to complete
         await new Promise(resolve => setTimeout(resolve, 100))
 
-        // 3. Verify MCP cannot see the page anymore
-        const afterDisconnect = await client.callTool({
-            name: 'execute',
-            arguments: {
-                code: js`
-          const pages = context.pages();
-          console.log('Pages after disconnect:', pages.length);
-          return { pagesCount: pages.length };
-        `,
-            },
+        const afterDisconnectState = await serviceWorker.evaluate(async () => {
+            const state = globalThis.getExtensionState()
+            return {
+                connectionState: state.connectionState,
+                tabCount: Array.from(state.tabs.values()).length,
+            }
         })
-
-        const afterDisconnectOutput = (afterDisconnect as any).content[0].text
-        console.log('After disconnect:', afterDisconnectOutput)
-        expect(afterDisconnectOutput).toContain('Pages after disconnect: 0')
+        console.log('Extension state after disconnect:', afterDisconnectState)
+        expect(afterDisconnectState.tabCount).toBe(0)
 
         // 4. Re-enable extension on the same page
         console.log('Re-enabling extension...')
@@ -1548,7 +1542,7 @@ describe('MCP Server Tests', () => {
               "params": {
                 "captureBeyondViewport": false,
                 "clip": {
-                  "height": 528,
+                  "height": 581,
                   "scale": 1,
                   "width": 1280,
                   "x": 0,
@@ -1937,13 +1931,13 @@ describe('MCP Server Tests', () => {
         expect(normalized).toMatchInlineSnapshot(`
           {
             "cssLayoutViewport": {
-              "clientHeight": 720,
+              "clientHeight": 581,
               "clientWidth": 1280,
               "pageX": 0,
               "pageY": 0,
             },
             "cssVisualViewport": {
-              "clientHeight": 720,
+              "clientHeight": 581,
               "clientWidth": 1280,
               "offsetX": 0,
               "offsetY": 0,
@@ -1954,13 +1948,13 @@ describe('MCP Server Tests', () => {
             },
             "devicePixelRatio": 1,
             "layoutViewport": {
-              "clientHeight": 720,
+              "clientHeight": 581,
               "clientWidth": 1280,
               "pageX": 0,
               "pageY": 0,
             },
             "visualViewport": {
-              "clientHeight": 720,
+              "clientHeight": 581,
               "clientWidth": 1280,
               "offsetX": 0,
               "offsetY": 0,

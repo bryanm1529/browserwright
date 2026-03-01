@@ -6,12 +6,12 @@
 import { describe, bench, beforeAll, afterAll } from 'vitest'
 import { startBrowserwrightCDPRelayServer, type RelayServer } from '../../src/cdp-relay.js'
 import { WebSocket } from 'ws'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from '../../src/kill-port-process.js'
 import { createFileLogger } from '../../src/create-logger.js'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const PERF_PORT = 19995
+const PERF_PORT = 18995
 
 async function killProcessOnPort(port: number): Promise<void> {
   try {

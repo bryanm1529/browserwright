@@ -7,11 +7,11 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { startBrowserwrightCDPRelayServer, type RelayServer } from '../../src/cdp-relay.js'
 import { WebSocket } from 'ws'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from '../../src/kill-port-process.js'
 import { createFileLogger } from '../../src/create-logger.js'
 import vm from 'node:vm'
 
-const DIAG_PORT = 19993
+const DIAG_PORT = 18993
 
 async function killProcessOnPort(port: number): Promise<void> {
   try {
@@ -98,6 +98,18 @@ describe('Quick Performance Diagnostics', () => {
     it('measures WebSocket connection time', async () => {
       const times: number[] = []
 
+      const warmupSocket = new WebSocket(`ws://127.0.0.1:${DIAG_PORT}/cdp`)
+      await new Promise<void>((resolve, reject) => {
+        warmupSocket.on('open', () => {
+          resolve()
+        })
+        warmupSocket.on('error', reject)
+      })
+      warmupSocket.close()
+      await new Promise((resolve) => {
+        setTimeout(resolve, 10)
+      })
+
       for (let i = 0; i < 20; i++) {
         const start = performance.now()
         const ws = new WebSocket(`ws://127.0.0.1:${DIAG_PORT}/cdp`)
@@ -113,11 +125,17 @@ describe('Quick Performance Diagnostics', () => {
       }
 
       const avg = times.reduce((a, b) => a + b, 0) / times.length
+      const sortedTimes = [...times].sort((a, b) => {
+        return a - b
+      })
+      const median = sortedTimes[Math.floor(sortedTimes.length / 2)] || 0
       console.log(`\n  WebSocket connect: avg ${avg.toFixed(2)}ms (20 samples)`)
+      console.log(`  Median: ${median.toFixed(2)}ms`)
       console.log(`  Min: ${Math.min(...times).toFixed(2)}ms, Max: ${Math.max(...times).toFixed(2)}ms`)
 
-      // Connection should be fast on localhost
-      expect(avg).toBeLessThan(100)
+      // The first couple of localhost connects can pick up relay startup jitter, so use
+      // a warm-up connection and assert the median instead of the noisiest average.
+      expect(median).toBeLessThan(100)
     })
 
     it('measures message serialization overhead', () => {

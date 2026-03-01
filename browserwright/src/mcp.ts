@@ -13,7 +13,7 @@ import vm from 'node:vm'
 import dedent from 'string-dedent'
 import { createPatch } from 'diff'
 import { getCdpUrl, LOG_FILE_PATH, VERSION, sleep } from './utils.js'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from './kill-port-process.js'
 import { waitForPageLoad, WaitForPageLoadOptions, WaitForPageLoadResult } from './wait-for-page-load.js'
 import { getCDPSessionForPage, CDPSession, ICDPSession } from './cdp-session.js'
 import { Debugger } from './debugger.js'
@@ -25,6 +25,8 @@ import { screenshotWithAccessibilityLabels, type ScreenshotResult } from './aria
 import { getCleanHTML, type GetCleanHTMLOptions } from './clean-html.js'
 import { RefRegistry, addShortRefPrefix } from './ref-registry.js'
 import { filterSnapshot, type SnapshotFilterOptions } from './snapshot-filter.js'
+import { classifyError, SKIP_SNAPSHOT_CATEGORIES } from './error-classification.js'
+import { captureErrorContext } from './error-context.js'
 import { launchBrowser, type LaunchOptions, type LaunchedBrowser, type BrowserChannel } from './launcher.js'
 import { selectPage } from './page-selection.js'
 const __filename = fileURLToPath(import.meta.url)
@@ -62,6 +64,7 @@ interface State {
   browser: Browser | null
   context: BrowserContext | null
   launchMode: boolean
+  launchModeExplicit: boolean
   launchedBrowser: LaunchedBrowser | null
 }
 
@@ -116,6 +119,7 @@ const state: State = {
   browser: null,
   context: null,
   launchMode: false,
+  launchModeExplicit: false,
   launchedBrowser: null,
 }
 
@@ -340,7 +344,9 @@ async function killRelayServer(port: number): Promise<void> {
   try {
     await killPortProcess(port)
     await sleep(500)
-  } catch {}
+  } catch (error) {
+    mcpLog('Failed to kill relay server:', error)
+  }
 }
 
 /**
@@ -429,7 +435,7 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
   }
 
   // Launch mode: use launched browser instead of relay server
-  if (state.launchMode) {
+  if (state.launchMode && state.launchModeExplicit) {
     return ensureLaunchModeConnection()
   }
 
@@ -467,6 +473,16 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
     state.launchMode = true
     launchOptions = { headless: false } // Headed by default for visibility
     return ensureLaunchModeConnection()
+  }
+
+  if (state.launchMode && !state.launchModeExplicit && state.launchedBrowser) {
+    try {
+      await state.launchedBrowser.close()
+    } catch (error) {
+      mcpLog('Failed to close auto-launched browser before switching back to extension mode:', error)
+    }
+    state.launchedBrowser = null
+    state.launchMode = false
   }
 
   // Extension mode: we have tabs - REUSE the existing browser connection
@@ -1221,8 +1237,9 @@ server.tool(
       return { content }
     } catch (error: any) {
       const errorStack = error.stack || error.message
-      const isTimeoutError = error instanceof CodeExecutionTimeoutError || error.name === 'TimeoutError'
-      const isStaleError = error.message?.includes('stale') || error.message?.includes('no heartbeat')
+      const category = classifyError(error)
+      const isTimeoutError = category === 'timeout' || error instanceof CodeExecutionTimeoutError || error.name === 'TimeoutError'
+      const isStaleError = category === 'connection'
 
       // Always log to stderr, but only send non-timeout errors to relay server
       console.error('Error in execute tool:', errorStack)
@@ -1230,7 +1247,25 @@ server.tool(
         sendLogToRelayServer('error', 'Error in execute tool:', errorStack)
       }
 
-      const logsText = formatConsoleLogs(consoleLogs, 'Console output (before error)')
+      // Best-effort page context capture (1s timeout, never masks original error)
+      let contextBlock = ''
+      try {
+        const page = state.page
+        const snapshotFn = (!SKIP_SNAPSHOT_CATEGORIES.has(category) && page && (page as any)._snapshotForAI)
+          ? async () => {
+              const raw = await (page as any)._snapshotForAI()
+              const str = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2)
+              return filterSnapshot(str, { interactive: true, compact: true, maxDepth: 3 })
+            }
+          : undefined
+
+        contextBlock = await Promise.race([
+          captureErrorContext(page, consoleLogs, snapshotFn),
+          new Promise<string>((resolve) => setTimeout(() => resolve(''), 1000)),
+        ])
+      } catch {
+        // Context capture failed — proceed with original error only
+      }
 
       // Stale connection errors get a direct, actionable hint
       let resetHint: string
@@ -1242,11 +1277,13 @@ server.tool(
         resetHint = '\n\n[HINT: If this is an internal Playwright error, page/browser closed, or connection issue, call the `reset` tool to reconnect. Do NOT reset for other non-connection non-internal errors.]'
       }
 
+      const contextSection = contextBlock ? `\n\n${contextBlock}` : ''
+
       return {
         content: [
           {
             type: 'text',
-            text: `${logsText}\nError executing code: ${error.message}\n${errorStack}${resetHint}`,
+            text: `[${category}] Error executing code: ${error.message}\n${errorStack}${contextSection}${resetHint}`,
           },
         ],
         isError: true,
@@ -1422,6 +1459,7 @@ export async function startMcp(options: StartMcpOptions = {}) {
   if (isLaunchMode) {
     // Launch mode: spawn our own browser or connect to existing via CDP
     state.launchMode = true
+    state.launchModeExplicit = true
     launchOptions = {
       headless: options.headless,
       userDataDir: options.userDataDir,
@@ -1439,6 +1477,7 @@ export async function startMcp(options: StartMcpOptions = {}) {
       mcpLog('Will launch browser with persistent profile')
     }
   } else {
+    state.launchModeExplicit = false
     // Extension mode: use relay server
     const remote = getRemoteConfig()
     if (!remote) {

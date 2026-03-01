@@ -1,6 +1,6 @@
 {
     "name": "browserwright-extension",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Browserwright - Control your actual Chrome with AI",
     "private": true,
     "repository": {
@@ -12,7 +12,7 @@
         "node": ">=18"
     },
     "author": {
-        "name": "Microsoft Corporation"
+        "name": "Browserwright"
     },
     "license": "Apache-2.0",
     "scripts": {

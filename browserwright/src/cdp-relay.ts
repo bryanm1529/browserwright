@@ -67,6 +67,7 @@ export type RelayServer = {
 
 export async function startBrowserwrightCDPRelayServer({ port = 19988, host = '127.0.0.1', token, logger }: { port?: number; host?: string; token?: string; logger?: { log(...args: any[]): void; error(...args: any[]): void } } = {}): Promise<RelayServer> {
   const emitter = new EventEmitter()
+  emitter.setMaxListeners(0)
   const connectedTargets = new Map<string, ConnectedTarget>()
 
   const playwrightClients = new Map<string, PlaywrightClient>()

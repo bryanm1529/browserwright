@@ -2,7 +2,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { startBrowserwrightCDPRelayServer } from '../src/cdp-relay.js'
 import { WebSocket } from 'ws'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from '../src/kill-port-process.js'
 import { createFileLogger } from '../src/create-logger.js'
 
 const TEST_PORT = 19999

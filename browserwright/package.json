@@ -1,7 +1,7 @@
 {
   "name": "browserwright",
   "description": "Control your actual Chrome browser with AI - like Playwright, but for tabs you're already using",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,7 @@
   ],
   "keywords": [],
   "author": "Browserwright",
-  "license": "",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@browserbasehq/stagehand": "^3.0.5",
     "@mizchi/selector-generator": "1.50.0-next",
@@ -53,7 +53,6 @@
     "devtools-protocol": "^0.0.1543509",
     "diff": "^8.0.2",
     "hono": "^4.10.6",
-    "kill-port-process": "^3.2.1",
     "playwright-core": "^1.57.0",
     "posthtml": "^0.16.7",
     "posthtml-beautify": "^0.7.0",

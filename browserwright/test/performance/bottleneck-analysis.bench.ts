@@ -14,7 +14,7 @@ import { describe, bench, beforeAll, afterAll, expect } from 'vitest'
 import { createMCPClient } from '../../src/mcp-client.js'
 import { startBrowserwrightCDPRelayServer, type RelayServer } from '../../src/cdp-relay.js'
 import { WebSocket } from 'ws'
-import { killPortProcess } from 'kill-port-process'
+import { killPortProcess } from '../../src/kill-port-process.js'
 import { createFileLogger } from '../../src/create-logger.js'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -24,7 +24,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 
 const execAsync = promisify(exec)
-const BENCH_PORT = 19994
+const BENCH_PORT = 18994
 
 interface TimingResult {
   operation: string
