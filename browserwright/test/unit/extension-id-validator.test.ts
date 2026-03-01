@@ -47,6 +47,12 @@ describe('Extension ID Validation', () => {
     })
   })
 
+  describe('DEV_EXTENSION_IDS', () => {
+    it('should load the dev extension IDs from the repo config', () => {
+      expect(DEV_EXTENSION_IDS).toContain('oebcelbomadimcgchhabclmmfnhfhenc')
+    })
+  })
+
   describe('isOurExtension()', () => {
     it('should return true for production extension ID', () => {
       expect(isOurExtension(PRODUCTION_EXTENSION_ID)).toBe(true)

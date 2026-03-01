@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Load from the single source of truth at repo root
-const configPath = path.resolve(__dirname, '../../..', 'extension-ids.json')
+const configPath = path.resolve(__dirname, '../..', 'extension-ids.json')
 
 interface ExtensionIdsConfig {
   production: string

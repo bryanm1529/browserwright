@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.1
+
+### Bug Fixes
+
+- **Load dev extension IDs from the repo config**: Fix `extension-ids.json` resolution so local and unpacked extension workflows pick up the checked-in development IDs instead of silently falling back to production-only IDs
+- **Reuse an existing attached page instead of opening a blank one**: When multiple extension-managed tabs already exist, Browserwright now keeps using the current attached page when possible instead of always creating a new page
+
+### Changes
+
+- **Declare Chrome 118 as the support floor**: Added `minimum_chrome_version` to the extension manifest and documented the MV3 service worker lifetime requirement in the user-facing docs
+- **Align declared dependency ranges with the resolved lockfile**: Updated the published package manifests so fresh installs advertise the actual Playwright, MCP SDK, Vitest, TypeScript, and Vite plugin versions already validated in this repo
+
 ## 0.0.48
 
 ### Features

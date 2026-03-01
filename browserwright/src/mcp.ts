@@ -26,6 +26,7 @@ import { getCleanHTML, type GetCleanHTMLOptions } from './clean-html.js'
 import { RefRegistry, addShortRefPrefix } from './ref-registry.js'
 import { filterSnapshot, type SnapshotFilterOptions } from './snapshot-filter.js'
 import { launchBrowser, type LaunchOptions, type LaunchedBrowser, type BrowserChannel } from './launcher.js'
+import { selectPage } from './page-selection.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -486,17 +487,10 @@ async function ensureConnection(): Promise<{ browser: Browser; page: Page }> {
   })
 
   const pages = context.pages()
-  let page: Page
+  const page = selectPage({ pages, previousPage: state.page })
 
-  if (pages.length === 0) {
+  if (!page) {
     throw new Error(NO_TABS_ERROR)
-  } else if (pages.length === 1) {
-    // Single page — use it (single-agent mode, or first agent to connect)
-    page = pages[0]
-  } else {
-    // Multiple pages exist (other agents likely connected) — create our own
-    // This triggers Target.createTarget over CDP, and the relay will set us as owner
-    page = await context.newPage()
   }
 
   // Set up console listener for all existing pages
@@ -623,19 +617,13 @@ async function getCurrentPage(timeout = 5000) {
     if (contexts.length > 0) {
       const context = contexts[0]
       const pages = context.pages()
+      const page = selectPage({ pages, previousPage: state.page })
 
-      if (pages.length === 1) {
-        // Single page — use it (backward compat)
-        const page = pages[0]
+      if (page) {
         state.page = page
         await page.waitForLoadState('domcontentloaded', { timeout }).catch((err) => {
           mcpLog(`Warning: Page load state check failed (${err.message}).`)
         })
-        return page
-      } else if (pages.length > 1) {
-        // Multiple pages — create our own to avoid stealing another agent's tab
-        const page = await context.newPage()
-        state.page = page
         return page
       }
     }
@@ -682,15 +670,10 @@ async function resetConnection(): Promise<{ browser: Browser; page: Page; contex
   })
 
   const pages = context.pages()
-  let page: Page
+  const page = selectPage({ pages, previousPage: state.page })
 
-  if (pages.length === 0) {
+  if (!page) {
     throw new Error(NO_TABS_ERROR)
-  } else if (pages.length === 1) {
-    page = pages[0]
-  } else {
-    // Multiple pages — create our own to avoid stealing another agent's tab
-    page = await context.newPage()
   }
 
   // Set up console listener for all existing pages

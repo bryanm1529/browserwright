@@ -8,6 +8,8 @@ Control your actual Chrome browser with AI - like Playwright, but for tabs you'r
 
 Browserwright is a Chrome extension that enables AI assistants to connect to your existing Chrome instance without spawning a new browser or requiring Chrome to be started in CDP mode. This allows AI agents (Claude, VS Code, or any MCP client) to interact with your actual browser session through the Model Context Protocol.
 
+Browserwright requires Chrome 118 or later. The extension depends on Manifest V3 service worker lifetime improvements that keep attached debugger sessions and the relay WebSocket alive reliably while a tab is connected.
+
 ## Key Features
 
 - **Works with your tabs**: Control tabs you're already using, not a new browser instance
@@ -18,7 +20,7 @@ Browserwright is a Chrome extension that enables AI assistants to connect to you
 
 ## Quick Start
 
-1. Install the extension in your Chrome browser
+1. Install the extension in Chrome 118 or later
 2. Press **Ctrl+Shift+P** (Cmd+Shift+P on Mac) to attach the current tab
 3. Or click the extension icon, or drag a tab into the "browserwright" tab group
 4. The icon turns green when successfully connected

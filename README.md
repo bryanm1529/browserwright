@@ -30,7 +30,7 @@ Add to your MCP client config (e.g., Claude Desktop's `claude_desktop_config.jso
 
 ### Optional: Extension Mode
 
-For controlling tabs you're already using (with your logged-in sessions), install the [Chrome Extension](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe):
+For controlling tabs you're already using (with your logged-in sessions), install the [Chrome Extension](https://chromewebstore.google.com/detail/browserwright/jfeammnjpkecdekppnclgkkffahnhfhe) on Chrome 118 or later:
 
 1. Install from Chrome Web Store
 2. Click the extension icon on any tab to attach it
